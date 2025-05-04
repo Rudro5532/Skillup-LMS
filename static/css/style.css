@@ -1,0 +1,76 @@
+body {
+	font-family: 'Poppins', sans-serif;
+	background: linear-gradient(to right, #e3f2fd, #fce4ec);
+	color: #333;
+}
+
+.navbar {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hero {
+	background: linear-gradient(to right, #2196f3, #e91e63);
+	color: white;
+	padding: 80px 0;
+	text-align: center;
+}
+
+.hero h1 {
+	font-size: 3rem;
+	font-weight: bold;
+}
+
+.hero p {
+	font-size: 1.2rem;
+	opacity: 0.9;
+}
+
+.btn-custom {
+	background-color: #ffffff;
+	color: #2196f3;
+	border-radius: 30px;
+	font-weight: 600;
+	padding: 10px 25px;
+	transition: 0.4s ease-in-out;
+	box-shadow: 0 4px 14px rgba(255, 255, 255, 0.3);
+}
+
+.btn-custom:hover {
+	background-color: #e3f2fd;
+	color: #e91e63;
+	transform: scale(1.05);
+}
+
+.card {
+	border: none;
+	transition: transform 0.3s ease;
+	border-radius: 20px;
+	overflow: hidden;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+	transform: translateY(-10px);
+}
+
+.footer {
+	background: #212529;
+	color: #ccc;
+}
+
+.footer p {
+	margin: 0;
+	padding: 10px;
+}
+
+.card:hover {
+    transform: scale(1.03);
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+.card img {
+    transition: 0.3s ease-in-out;
+}
+.card:hover img {
+    transform: scale(1.05);
+}

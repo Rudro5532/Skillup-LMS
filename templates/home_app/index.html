@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock title %}
+{% block content %}
+
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Unlock Your Potential with SkillUp</h1>
+        <p>Master trending skills with industry-ready courses and expert mentors</p>
+        <a href="#" class="btn btn-custom mt-3">Explore Courses</a>
+    </div>
+</section>
+
+<!-- Course Slider Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">🎯 Featured Courses</h2>
+
+        <div id="courseCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#courseCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+                <button type="button" data-bs-target="#courseCarousel" data-bs-slide-to="1"></button>
+            </div>
+
+            <div class="carousel-inner">
+
+               <!-- Slide 1 -->
+                <div class="carousel-item active">
+                    <div class="row justify-content-center g-4">
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="card h-100 shadow-sm">
+                                <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/dtls-pg-course-img.png" class="card-img-top" alt="Python Fundamentals">
+                                <div class="card-body">
+                                    <h5 class="card-title">Web Design & UI/UX Design with Graphics
+                                    </h5>
+                                    <span class="badge bg-success">★ 4.9</span>
+                                    <span class="badge bg-primary">Beginner</span>
+                                    <p class="card-text mt-2">Become a professional UI/UX designer expert capable of designing high-impact website.</p>
+                                    <a href="#" class="btn btn-outline-primary">Enroll</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="card h-100 shadow-sm">
+                                <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/HTML-Front-End-Development-Course-details.png" class="card-img-top" alt="Front-End Magic">
+                                <div class="card-body">
+                                    <h5 class="card-title">Front-End Magic</h5>
+                                    <span class="badge bg-success">★ 4.7</span>
+                                    <span class="badge bg-info">Intermediate</span>
+                                    <p class="card-text mt-2">Take your web development skills to the next level with our HTML Front-End development</p>
+                                    <a href="#" class="btn btn-outline-primary">Enroll</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                            <div class="card h-100 shadow-sm">
+                                <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/Manual-Testing-Course-details.png" class="card-img-top" alt="ML Basics">
+                                <div class="card-body">
+                                    <h5 class="card-title">Manual Testing Course</h5>
+                                    <span class="badge bg-success">★ 4.6</span>
+                                    <span class="badge bg-warning text-dark">Advanced</span>
+                                    <p class="card-text mt-2">Learn the intricacies of manual testing with our comprehensive course.</p>
+                                    <a href="#" class="btn btn-outline-primary">Enroll</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="carousel-item">
+                    <div class="row justify-content-center g-4">
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="card h-100 shadow-sm">
+                                <img src="https://www.webskittersacademy.in/wp-content/uploads/2024/05/Python-and-Django-Framework-Course-details.png" alt="Django Developer">
+                                <div class="card-body">
+                                    <h5 class="card-title">Django Development</h5>
+                                    <span class="badge bg-success">★ 4.8</span>
+                                    <span class="badge bg-info">Intermediate</span>
+                                    <p class="card-text mt-2">Build real web apps using Django framework.</p>
+                                    <a href="#" class="btn btn-outline-primary">Enroll</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="card h-100 shadow-sm">
+                                <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/React-JS-Course-details.png" class="card-img-top" alt="React for Beginners">
+                                <div class="card-body">
+                                    <h5 class="card-title">React for Beginners</h5>
+                                    <span class="badge bg-success">★ 4.5</span>
+                                    <span class="badge bg-primary">Beginner</span>
+                                    <p class="card-text mt-2">Dive into component-based frontend dev.</p>
+                                    <a href="#" class="btn btn-outline-primary">Enroll</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                            <div class="card h-100 shadow-sm">
+                                <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/Node-JS-Course-details.png" class="card-img-top" alt="SQL & Databases">
+                                <div class="card-body">
+                                    <h5 class="card-title">Node JS</h5>
+                                    <span class="badge bg-success">★ 4.6</span>
+                                    <span class="badge bg-secondary">All Levels</span>
+                                    <p class="card-text mt-2">Master your carrer with backend development skills.</p>
+                                    <a href="#" class="btn btn-outline-primary">Enroll</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#courseCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+
+            <button class="carousel-control-next" type="button" data-bs-target="#courseCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+
+
+
+<!-- Courses Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 fw-bold">🔥 Trending Courses</h2>
+        <div class="row g-4">
+            <!-- Course 1 -->
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card h-100">
+                    <img src="https://www.webskittersacademy.in/wp-content/uploads/2024/05/Python-and-Django-Framework-Course-Listing.png" class="card-img-top" alt="Python Course">
+                    <div class="card-body">
+                        <h5 class="card-title">Python Django</h5>
+                        <p class="card-text">Master the Python and Django Frameworks, as well as the basics of fundamental concepts, programming techniques, and user interaction.</p>
+                        <a href="#" class="btn btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Course 2 -->
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card h-100">
+                    <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/MERN-Stack-Development-Course-Listing.png" class="card-img-top" alt="Web Dev">
+                    <div class="card-body">
+                        <h5 class="card-title">Full Stack Web Development- MERN</h5>
+                        <p class="card-text">Skillup offers a top-tier MERN Stack Development Course in Kolkata. With hands-on training programs, you can achieve endless career opportunities.</p>
+                        <a href="#" class="btn btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Course 3 -->
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card h-100">
+                    <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/Flutter-with-Dart-Course-Listing.png" class="card-img-top" alt="Data Science">
+                    <div class="card-body">
+                        <h5 class="card-title">Data Science & ML Basics</h5>
+                        <p class="card-text">Skillup is offering a top-notch Flutter with Dart course in Kolkata for beginners. The comprehensive course helps unleash your mobile app development potential for advanced opportunities</p>
+                        <a href="#" class="btn btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Why Choose SkillUp?</h2>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <i class="fas fa-chalkboard-teacher fa-3x mb-3"></i>
+                <h4>Expert Instructors</h4>
+                <p>Learn from industry experts who bring real-world experience to every course.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-certificate fa-3x mb-3"></i>
+                <h4>Certifications</h4>
+                <p>Get certified after completing each course and enhance your resume.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-users fa-3x mb-3"></i>
+                <h4>Community Support</h4>
+                <p>Join a vibrant community of learners and educators to exchange knowledge and ideas.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Testimonials Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">What Our Students Say</h2>
+        <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="d-flex justify-content-center">
+                        <div class="card shadow-sm p-4 w-75 text-center">
+                            <p>"This platform has helped me take my career to the next level. The courses are in-depth and easy to understand!"</p>
+                            <h5>John Doe</h5>
+                            <span class="text-muted">Software Engineer</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="d-flex justify-content-center">
+                        <div class="card shadow-sm p-4 w-75 text-center">
+                            <p>"SkillUp's courses are top-notch. I learned everything I needed to get started in Data Science!"</p>
+                            <h5>Jane Smith</h5>
+                            <span class="text-muted">Data Scientist</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+
+
+
+<!-- Autoplay Carousel JS -->
+<script>
+    var myCarousel = document.querySelector('#courseCarousel');
+    var carousel = new bootstrap.Carousel(myCarousel, {
+        interval: 5000,
+        pause: 'hover',
+        ride: 'carousel'
+    });
+</script>
+{% endblock content %}
