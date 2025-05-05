@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %} Account || Login {% endblock title %}
+
+{% block content %}
+<!-- Login Form -->
+<section class="vh-100" style="background-color: #f2f4f7;">
+    <div class="container py-5 h-100">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <h3 class="text-center mb-4 fw-bold">Login to Your Account</h3>
+  
+                        <form id="loginForm" method="POST">
+                            {% csrf_token %}
+  
+                            <div class="mb-3">
+                                <label class="form-label">Email address</label>
+                                <input type="email" class="form-control" name="email" required />
+                            </div>
+  
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" name="password" required />
+                            </div>
+  
+                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                        </form>
+  
+                        <div class="mt-3 text-center">
+                            <p>Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
