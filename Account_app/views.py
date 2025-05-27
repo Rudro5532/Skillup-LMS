@@ -1,7 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.http import JsonResponse
 from django.contrib import messages
 from .models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 import re
+
 
 
 #regex_part
@@ -20,8 +24,11 @@ def student_signup(request):
         confirm_password = request.POST.get("confirm_password")
 
         if not password == confirm_password:
-            messages.error(request, "Password and confirm password must be same")
-            return render(request, "account/student_signup.html")
+            #messages.error(request, "Password and confirm password must be same")
+            return JsonResponse({
+                "acknowledge" : "Password and confirm password must be same"
+            })
+            #return render(request, "account/student_signup.html")
         
         if User.objects.filter(email=email).exists():
             messages.error(request , "Email already register")
@@ -111,5 +118,43 @@ def teacher_signup(request):
     return render(request, "account/teacher_signup.html")
 
 
-def login(request):
+def user_login(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        user = authenticate(request, email = email, password = password)
+        if user is not None:
+            login(request, user)
+            print("User:", user)
+            if user.is_teacher:
+                return redirect("teacher_dashboard")
+            else:
+                return redirect("student_dashboard")
+        else:
+            messages.error(request, "Invalid credential")
+            return render(request, "account/login.html")
     return render(request, "account/login.html")
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect("home")
+
+def is_student(user):
+   return user.is_authenticated and not user.is_teacher
+
+@login_required
+@user_passes_test(is_student, login_url='teacher_dashboard')
+def student_dashboard(request):
+    return render(request, "account/student_dashboard.html")
+
+def is_teacher(user):
+   return user.is_teacher
+
+@login_required
+@user_passes_test(is_teacher, login_url='home')
+def teacher_dashboard(request):
+    return render(request, "account/teacher_dashboard.html")
+
+
