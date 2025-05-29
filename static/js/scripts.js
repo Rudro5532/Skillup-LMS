@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  console.log("LMS dom is ready")
+  console.log("LMS dom is ready student")
 
   $("#student_register").click(function(event){
     event.preventDefault()

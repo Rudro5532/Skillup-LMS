@@ -15,65 +15,68 @@ email_regex = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
 password_regex = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*_-])[A-Za-z\d!@#$%^&*_-]{6,}'
 
 def student_signup(request):
-    if request.method == 'POST':
-        full_name = request.POST.get("name")
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm_password")
+    if request.user.is_authenticated:
+        return redirect("home")
+    else:
+        if request.method == 'POST':
+            full_name = request.POST.get("name")
+            username = request.POST.get("username")
+            email = request.POST.get("email")
+            password = request.POST.get("password")
+            confirm_password = request.POST.get("confirm_password")
 
-        if not password == confirm_password:
-            return JsonResponse({
-                "message" : "Password and confirm password must be same",
-                "success" : False
-            })
-        
-        if User.objects.filter(email=email).exists():
-            return JsonResponse({
-                "message" : "Email already register",
-                "success" : False
-            })
+            if not password == confirm_password:
+                return JsonResponse({
+                    "message" : "Password and confirm password must be same",
+                    "success" : False
+                })
+            
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({
+                    "message" : "Email already register",
+                    "success" : False
+                })
 
 
-        
-        if not re.fullmatch(password_regex, password ):
-            return JsonResponse({
-                "message" : "write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.",
-                "success" : False
-            })
-        
-        if not re.fullmatch(name_regex, full_name):
-            return JsonResponse({
-                "message" : "Please write your full and correct name",
-                "success" : False
-            })
+            
+            if not re.fullmatch(password_regex, password ):
+                return JsonResponse({
+                    "message" : "write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.",
+                    "success" : False
+                })
+            
+            if not re.fullmatch(name_regex, full_name):
+                return JsonResponse({
+                    "message" : "Please write your full and correct name",
+                    "success" : False
+                })
 
-        
-        if not re.fullmatch(username_regex,username):
+            
+            if not re.fullmatch(username_regex,username):
+                return JsonResponse({
+                    "message" : "Start with @ and use one number and always use small letter",
+                    "success" : False
+                })
+            
+            if not re.fullmatch(email_regex, email):
+                return JsonResponse({
+                    "message" : "Please write correct format of email",
+                    "success" : False
+                })
+            
+            user = User(
+                full_name = full_name,
+                username = username,
+                email = email,
+                password=password
+            )
+            user.set_password(password)
+            user.save()
             return JsonResponse({
-                "message" : "Start with @ and use one number and always use small letter",
-                "success" : False
-            })
-        
-        if not re.fullmatch(email_regex, email):
-            return JsonResponse({
-                "message" : "Please write correct format of email",
-                "success" : False
-            })
-        
-        user = User(
-            full_name = full_name,
-            username = username,
-            email = email,
-            password=password
-        )
-        user.set_password(password)
-        user.save()
-        return JsonResponse({
-                "message" : "Registration success!!",
-                "success" : True
-            })
-    return render(request, "account/student_signup.html")
+                    "message" : "Registration success!!",
+                    "success" : True
+                })
+        return render(request, "account/student_signup.html")
 
 
 def teacher_signup(request):

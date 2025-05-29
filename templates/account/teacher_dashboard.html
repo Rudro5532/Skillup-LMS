@@ -2,5 +2,159 @@
 {% block title %}Dashboard || Teacher{% endblock title %}
 {% block content %}
 {% include "partials/navbar.html" %}
-<h1>Teacher Dashboard</h1>
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+      <div class="position-sticky pt-3">
+        <h3 class="px-3">Hello, Teacher</h3>
+        <ul class="nav flex-column mt-4">
+          <li class="nav-item">
+            <a class="nav-link" href="#profile-edit">Profile Settings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#blog-management">Manage Blogs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#students-list">Students List</a>
+          </li>
+          <li class="nav-item mt-5">
+            <a class="nav-link btn btn-danger text-white" href="#">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+
+      <!-- Profile Edit -->
+      <section id="profile-edit" class="mb-5">
+        <h2>Profile Settings</h2>
+        <form>
+          <div class="mb-3">
+            <label for="teacher_first_name" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="teacher_first_name" value="Jane" required />
+          </div>
+          <div class="mb-3">
+            <label for="teacher_last_name" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="teacher_last_name" value="Smith" required />
+          </div>
+          <div class="mb-3">
+            <label for="teacher_email" class="form-label">Email address (cannot be changed)</label>
+            <input type="email" class="form-control" id="teacher_email" value="jane.smith@example.com" disabled />
+          </div>
+          <div class="mb-3">
+            <label for="teacher_password1" class="form-label">New Password</label>
+            <input type="password" class="form-control" id="teacher_password1" placeholder="Leave blank to keep current password" />
+          </div>
+          <div class="mb-3">
+            <label for="teacher_password2" class="form-label">Confirm New Password</label>
+            <input type="password" class="form-control" id="teacher_password2" placeholder="Confirm new password" />
+          </div>
+          <button type="submit" class="btn btn-success">Update Profile</button>
+        </form>
+      </section>
+
+      <!-- Blog Management -->
+      <section id="blog-management" class="mb-5">
+        <h2 class="mb-4">Manage Blogs</h2>
+
+        <!-- Add Blog Form -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <strong>Create a New Blog</strong>
+          </div>
+          <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="blogTitle" class="form-label">Blog Name</label>
+                <input type="text" class="form-control" id="blogTitle" name="title" required>
+              </div>
+              <div class="mb-3">
+                <label for="blogCategory" class="form-label">Category</label>
+                <select class="form-select" id="blogCategory" name="category" required>
+                  <option value="">-- Select Category --</option>
+                  <option value="django">Django</option>
+                  <option value="python">Python</option>
+                  <option value="webdev">Web Development</option>
+                  <!-- dynamically generate if needed -->
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="blogImage" class="form-label">Blog Image</label>
+                <input type="file" class="form-control" id="blogImage" name="image" required>
+              </div>
+              <div class="mb-3">
+                <label for="blogPrice" class="form-label">Price (₹)</label>
+                <input type="number" class="form-control" id="blogPrice" name="price" min="0" value="0" required>
+              </div>
+              <div class="mb-3">
+                <label for="blogContent" class="form-label">Content</label>
+                <textarea class="form-control" id="blogContent" name="content" rows="6" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-success">Publish Blog</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Blog List -->
+        <div class="list-group mb-4">
+          <div class="list-group-item list-group-item-action card-hover d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="mb-1">How to Learn Python Quickly</h5>
+              <small class="text-muted">Published: 2025-05-15</small>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-warning me-2">Edit</button>
+              <button class="btn btn-sm btn-danger">Delete</button>
+            </div>
+          </div>
+          <div class="list-group-item list-group-item-action card-hover d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="mb-1">Django for Beginners</h5>
+              <small class="text-muted">Published: 2025-04-20</small>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-warning me-2">Edit</button>
+              <button class="btn btn-sm btn-danger">Delete</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Students List -->
+      <section id="students-list">
+        <h2>Students List</h2>
+        <table class="table table-hover table-striped align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Student Name</th>
+              <th>Email</th>
+              <th>Enrolled Courses</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>1</th>
+              <td>Rudro Dhar</td>
+              <td>rudro@example.com</td>
+              <td>Python for Beginners, Django Basics</td>
+            </tr>
+            <tr>
+              <th>2</th>
+              <td>Monika Sen</td>
+              <td>monika@example.com</td>
+              <td>Web Development, Machine Learning</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+    </main>
+  </div>
+</div>
 {% endblock content %}

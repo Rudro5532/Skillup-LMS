@@ -79,3 +79,27 @@ body {
 	border-radius: 1rem;
 	box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
+
+.sidebar {
+      min-height: 100vh;
+      background: #343a40;
+      color: white;
+    }
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 15px;
+      display: block;
+      font-weight: 500;
+    }
+    .sidebar a:hover {
+      background: #495057;
+      text-decoration: none;
+    }
+    .course-card {
+      transition: transform 0.3s ease;
+    }
+    .course-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }

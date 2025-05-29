@@ -2,5 +2,99 @@
 {% block title %}Dashboard || Student{% endblock title %}
 {% block content %}
 {% include "partials/navbar.html" %}
-<h1>Student Dashboard</h1>
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+      <div class="position-sticky pt-3">
+        {% if user.is_authenticated %}
+        <h3 class="px-3">Welcome, {{user.full_name}}</h3>
+        {% endif %}
+        
+        <ul class="nav flex-column mt-4">
+          <li class="nav-item">
+            <a class="nav-link" href="#courses">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+                <path d="M1 2.828c.885-.37 2.154-.828 4-.828 1.333 0 2.5.435 3.5 1 1-...z"/>
+              </svg>
+              My Courses
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#profile-settings">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                <path d="..."/>
+              </svg>
+              Profile Settings
+            </a>
+          </li>
+          <li class="nav-item mt-5">
+            <a class="nav-link btn btn-danger text-white" href="#">
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+      <h2 id="courses">My Purchased Courses</h2>
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Course 1 -->
+        <div class="col">
+          <div class="card course-card shadow-sm">
+            <img src="https://www.webskittersacademy.in/wp-content/uploads/2024/05/Python-and-Django-Framework-Course-Listing.png" class="card-img-top" alt="Course 1">
+            <div class="card-body">
+              <h5 class="card-title">Python Django</h5>
+              <p class="card-text text-truncate">Learn Python programming from scratch. This course covers basics to advanced topics.</p>
+              <a href="#" class="btn btn-primary">Go to Course</a>
+            </div>
+          </div>
+        </div>
+        <!-- Course 2 -->
+        <div class="col">
+          <div class="card course-card shadow-sm">
+            <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/MERN-Stack-Development-Course-Listing.png" class="card-img-top" alt="Course 2">
+            <div class="card-body">
+              <h5 class="card-title">Full Stack Web Development- MERN</h5>
+              <p class="card-text text-truncate">Build real-world web applications using Django framework.</p>
+              <a href="#" class="btn btn-primary">Go to Course</a>
+            </div>
+          </div>
+        </div>
+        <!-- Add more courses here as needed -->
+      </div>
+
+      <hr class="my-5" />
+
+      <h2 id="profile-settings">Profile Settings</h2>
+      <form>
+        <div class="mb-3">
+          <label for="first_name" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="first_name" value="John" required />
+        </div>
+        <div class="mb-3">
+          <label for="last_name" class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="last_name" value="Doe" required />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address (cannot be changed)</label>
+          <input type="email" class="form-control" id="email" value="john@example.com" disabled />
+        </div>
+        <div class="mb-3">
+          <label for="password1" class="form-label">New Password</label>
+          <input type="password" class="form-control" id="password1" placeholder="Leave blank to keep current password" />
+        </div>
+        <div class="mb-3">
+          <label for="password2" class="form-label">Confirm New Password</label>
+          <input type="password" class="form-control" id="password2" placeholder="Confirm new password" />
+        </div>
+        <button type="submit" class="btn btn-success">Update Profile</button>
+      </form>
+    </main>
+
+  </div>
+</div>
 {% endblock content %}
