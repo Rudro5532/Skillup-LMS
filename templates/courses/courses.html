@@ -4,7 +4,7 @@
 
 {% include "partials/navbar.html" %}
 
-<!-- Hero Section (Gradient like home) -->
+<!-- Hero Section -->
 <section class="py-5 text-center text-white" style="background: linear-gradient(90deg, #007bff, #e83e8c);">
   <div class="container">
     <h1 class="display-5 fw-bold">All Premium Courses</h1>
@@ -25,29 +25,38 @@
 <section class="pb-5" id="courses">
   <div class="container">
     <div class="row g-4">
-    
-      {% for course in courses %}
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card shadow-sm border-0 h-100 rounded-4 overflow-hidden">
-          <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.name }}" style="height: 200px; object-fit: cover;">
-          <div class="card-body d-flex flex-column">
-            <h5 class="fw-bold">{{ course.name }}</h5>
-            <span class="badge bg-gradient text-dark mb-2" style="background: linear-gradient(to right, #007bff, #e83e8c);">
-              {{ course.category }}
-            </span>
-            <p class="text-muted flex-grow-1 small">{{ course.description|truncatechars:100 }}</p>
-            <div class="d-flex justify-content-between align-items-center mt-3">
-              <span class="fw-bold text-primary">₹ {{ course.price }}</span>
-              {% comment %} <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary btn-sm">View Course</a> {% endcomment %}
+      {% if courses %}
+        {% for course in courses %}
+          <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100 rounded-4 overflow-hidden position-relative">
+              
+              <!-- Course Image with Category Badge -->
+              <div class="position-relative" style="height: 200px; overflow: hidden;">
+                <img src="{{ course.image.url }}" class="card-img-top w-100 h-100" alt="{{ course.name }}" style="object-fit: cover;">
+                
+                <span class="position-absolute top-0 end-0 m-2 badge text-white px-3 py-2 rounded-pill" 
+                      style="background: linear-gradient(to right, #007bff, #e83e8c); font-size: 0.8rem;">
+                  {{ course.category }}
+                </span>
+              </div>
+
+              <!-- Course Info -->
+              <div class="card-body d-flex flex-column p-4">
+                <h5 class="fw-bold text-dark mb-2">{{ course.name }}</h5>
+                <p class="text-muted small flex-grow-1 mb-3">{{ course.description|truncatechars:100 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="fw-bold text-primary">Price : ${{ course.price }}</span>
+                  <a href="#" class="btn btn-outline-primary btn-sm">View Course</a>
+                </div>
+              </div>
             </div>
           </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <div class="alert alert-warning text-center">No paid courses available at the moment.</div>
         </div>
-      </div>
-      {% empty %}
-      <div class="col-12">
-        <div class="alert alert-warning text-center">No paid courses available at the moment.</div>
-      </div>
-      {% endfor %}
+      {% endif %}
     </div>
   </div>
 </section>
