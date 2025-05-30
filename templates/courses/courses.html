@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}All Premium Courses{% endblock title %}
+{% block content %}
+
+{% include "partials/navbar.html" %}
+
+<!-- Hero Section (Gradient like home) -->
+<section class="py-5 text-center text-white" style="background: linear-gradient(90deg, #007bff, #e83e8c);">
+  <div class="container">
+    <h1 class="display-5 fw-bold">All Premium Courses</h1>
+    <p class="lead">Access expert-led, industry-focused learning with our premium paid courses.</p>
+  </div>
+</section>
+
+<!-- Search Bar -->
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <input type="text" class="form-control form-control-lg shadow-sm border-0" placeholder="🔍 Search courses...">
+    </div>
+  </div>
+</div>
+
+<!-- Courses Grid -->
+<section class="pb-5" id="courses">
+  <div class="container">
+    <div class="row g-4">
+    
+      {% for course in courses %}
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card shadow-sm border-0 h-100 rounded-4 overflow-hidden">
+          <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.name }}" style="height: 200px; object-fit: cover;">
+          <div class="card-body d-flex flex-column">
+            <h5 class="fw-bold">{{ course.name }}</h5>
+            <span class="badge bg-gradient text-dark mb-2" style="background: linear-gradient(to right, #007bff, #e83e8c);">
+              {{ course.category }}
+            </span>
+            <p class="text-muted flex-grow-1 small">{{ course.description|truncatechars:100 }}</p>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <span class="fw-bold text-primary">₹ {{ course.price }}</span>
+              {% comment %} <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary btn-sm">View Course</a> {% endcomment %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-warning text-center">No paid courses available at the moment.</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock content %}
