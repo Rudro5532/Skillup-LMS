@@ -53,7 +53,6 @@ $(document).ready(function(){
             password : password,
             confirm_password : confirm_password,
             csrfmiddlewaretoken: csrf_token
-
         },
         success : function(response){
             if(response.success){

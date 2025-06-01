@@ -156,22 +156,25 @@ def teacher_signup(request):
 
 
 def user_login(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
+    if request.user.is_authenticated:
+        return redirect("home")
+    else:
+        if request.method == "POST":
+            email = request.POST.get("email")
+            password = request.POST.get("password")
 
-        user = authenticate(request, email = email, password = password)
-        if user is not None:
-            login(request, user)
-            print("User:", user)
-            if user.is_teacher:
-                return redirect("teacher_dashboard")
+            user = authenticate(request, email = email, password = password)
+            if user is not None:
+                login(request, user)
+                #print("User:", user)
+                if user.is_teacher:
+                    return redirect("teacher_dashboard")
+                else:
+                    return redirect("student_dashboard")
             else:
-                return redirect("student_dashboard")
-        else:
-            messages.error(request, "Invalid credential")
-            return render(request, "account/login.html")
-    return render(request, "account/login.html")
+                messages.error(request, "Invalid credential")
+                return render(request, "account/login.html")
+        return render(request, "account/login.html")
 
 @login_required
 def user_logout(request):

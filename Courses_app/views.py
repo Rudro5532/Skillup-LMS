@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Course
+from django.contrib.auth.decorators import login_required
+
 
 
 def courses(request):
@@ -9,3 +11,8 @@ def courses(request):
         "courses" : all_course
     }
     return render(request, "courses/courses.html", context)
+
+@login_required(login_url="user_login")
+def get_course(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    return render(request, "courses/single_course.html",{"course" : course})
