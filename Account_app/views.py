@@ -5,6 +5,13 @@ from .models import User
 from Courses_app.models import Category,Course
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 import re
 
 
@@ -15,16 +22,26 @@ username_regex = r'^@([a-z0-9_]{3,})$'
 email_regex = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
 password_regex = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*_-])[A-Za-z\d!@#$%^&*_-]{6,}'
 
-def student_signup(request):
+def signup(request):
     if request.user.is_authenticated:
         return redirect("home")
     else:
+        if 'teacher' in request.path:
+            is_teacher = True
+            is_staff = True
+            #show_subject = True
+        else:
+            is_teacher = False
+            #show_subject = False
+            is_staff = False
+
         if request.method == 'POST':
             full_name = request.POST.get("name")
             username = request.POST.get("username")
             email = request.POST.get("email")
             password = request.POST.get("password")
             confirm_password = request.POST.get("confirm_password")
+            subject = request.POST.get("subject") if is_teacher else ''
 
             if not password == confirm_password:
                 return JsonResponse({
@@ -38,8 +55,6 @@ def student_signup(request):
                     "success" : False
                 })
 
-
-            
             if not re.fullmatch(password_regex, password ):
                 return JsonResponse({
                     "message" : "write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.",
@@ -68,92 +83,45 @@ def student_signup(request):
             user = User(
                 full_name = full_name,
                 username = username,
-                email = email,
-                password=password
-            )
-            user.set_password(password)
-            user.save()
-            return JsonResponse({
-                    "message" : "Registration success!!",
-                    "success" : True
-                })
-        return render(request, "account/student_signup.html")
-
-
-def teacher_signup(request):
-    if request.user.is_authenticated:
-        return redirect("home")
-    else:
-        if request.method == 'POST':
-            full_name = request.POST.get("name")
-            username = request.POST.get("username")
-            subject = request.POST.get("subject")
-            email = request.POST.get("email")
-            password = request.POST.get("password")
-            confirm_password = request.POST.get("confirm_password")
-
-            if not all([full_name, email, password, subject, username]):
-                return JsonResponse({
-                    "message" : "All field ar requried",
-                    "success" : False
-                })
-
-            if not password == confirm_password:
-                return JsonResponse({
-                    "message" : "Password and confirm password must be same",
-                    "success" : False
-                })
-            
-            if User.objects.filter(email=email).exists():
-                 return JsonResponse({
-                    "message" : "Email already register",
-                    "success" : False
-                })
-
-            
-            if not re.fullmatch(password_regex, password ):
-               if not re.fullmatch(password_regex, password ):
-                return JsonResponse({
-                    "message" : "write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.",
-                    "success" : False
-                })
-            
-            if not re.fullmatch(name_regex, full_name):
-                return JsonResponse({
-                    "message" : "Please write your full and correct name",
-                    "success" : False
-                })
-            
-            if not re.fullmatch(username_regex,username):
-                return JsonResponse({
-                    "message" : "Start with @ and use one number and always use small letter",
-                    "success" : False
-                })
-            
-            if not re.fullmatch(email_regex, email):
-                return JsonResponse({
-                    "message" : "Please write correct format of email",
-                    "success" : False
-                })
-            
-            user = User(
-                full_name = full_name,
-                username = username,
-                subject = subject,
                 email = email,
                 password=password,
-                is_teacher = True,
-                is_staff = True
+                subject = subject,
+                is_teacher = is_teacher,
+                is_staff = is_staff
             )
             user.set_password(password)
             user.save()
-            # messages.success(request ,"Registration success")
-            return JsonResponse({
-                "success" : True,
-                "message" : "Registration success!! You are registartion as a teacher"
-            })
-            return render(request, "account/teacher_signup.html")
-        return render(request, "account/teacher_signup.html")
+            try:
+                uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+                token = default_token_generator.make_token(user)
+                activation_link = f"http://localhost:8000/account/activate/{uidb64}/{token}/"
+                subject_line = "Activate your Skillup account"
+                message = f"Hi {full_name},\nClick here to activate your account:\n{activation_link}"
+                send_mail(subject_line, message, settings.EMAIL_HOST_USER, [email], fail_silently=False)
+
+                return JsonResponse({"message": "Registration successful! Check your email to activate.", "success": True})
+
+            except Exception as e:
+                user.delete()
+                return JsonResponse({"message": "Email sending failed. Try again.", "success": False})
+
+    return render(request, "account/signup.html")
+    
+
+def activation_view(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(id=uid)
+    except:
+        user = None
+
+    if user and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return redirect('user_login')
+    else:
+        return HttpResponse("Invalid or expired activation link.")
+
 
 
 def user_login(request):

@@ -22,12 +22,14 @@
                   <label class="form-label">Full Name</label>
                   <input type="text" class="form-control" name="name" id="name" required />
                 </div>
-
+                
+                {% if 'teacher' in request.path %}
                 <div class="mb-3">
                   <label class="form-label">Subject</label>
                   <input type="text" class="form-control" name="subject" id="subject" required />
                 </div>
-              
+                {% endif %}
+                
                 <div class="mb-3">
                   <label class="form-label">Email address</label>
                   <input type="email" class="form-control" name="email" id="email" required />
@@ -51,7 +53,7 @@
                     {% endfor %}
                   </ul>
                 {% endif %}
-                <button type="submit" class="btn btn-primary w-100" id="teacher_register">Register</button>
+                <button type="submit" class="btn btn-primary w-100" id="register">Register</button>
                 <p>Have any account <a href="{% url "user_login" %}">login</a> or <a href="{% url "home" %}">Home page</a></p>
               </form>
               <div id="response"></div>
