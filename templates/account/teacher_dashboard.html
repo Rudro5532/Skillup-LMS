@@ -77,11 +77,26 @@
                 <label for="blogCategory" class="form-label">Category</label>
                 <select class="form-select" id="blogCategory" name="category" required>
                   <option value="">-- Select Category --</option>
-                  <option value="django">Django</option>
-                  <option value="python">Python</option>
-                  <option value="webdev">Web Development</option>
+                  {% for cat in categories %}
+                  <option value="{{cat.id}}">{{cat.category_name}}</option>
+                  {% endfor %}
+                 
                   <!-- dynamically generate if needed -->
                 </select>
+              </div>
+              <div class="mb-3">
+                <label for="blogCategory" class="form-label">Teacher</label>
+                <select class="form-select" id="blogCategory" name="teacher" required>
+                  <option value="">-- Select Teacher --</option>
+                  {% for teacher in teachers %}
+                  <option value="{{teacher.id}}">{{teacher.full_name}}</option>
+                  {% endfor %}
+                  <!-- dynamically generate if needed -->
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="blogTitle" class="form-label">Slug</label>
+                <input type="text" class="form-control" id="blogTitle" name="slug" required>
               </div>
               <div class="mb-3">
                 <label for="blogImage" class="form-label">Blog Image</label>
@@ -93,7 +108,7 @@
               </div>
               <div class="mb-3">
                 <label for="blogContent" class="form-label">Content</label>
-                <textarea class="form-control" id="blogContent" name="content" rows="6" required></textarea>
+                <textarea class="form-control" id="blogContent" name="description" rows="6" required></textarea>
               </div>
               <button type="submit" class="btn btn-success">Publish Blog</button>
             </form>

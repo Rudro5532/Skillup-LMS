@@ -1,7 +1,8 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import User
+from Courses_app.models import Category,Course
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 import re
@@ -195,6 +196,38 @@ def is_teacher(user):
 @login_required
 @user_passes_test(is_teacher, login_url='home')
 def teacher_dashboard(request):
-    return render(request, "account/teacher_dashboard.html")
+    if request.method == "POST":
+        name = request.POST.get("title")
+        category_id = request.POST.get("category")
+        teacher_id = request.POST.get("teacher")
+        price = request.POST.get("price")
+        description = request.POST.get("description")
+        slug = request.POST.get("slug")
+        image = request.FILES.get("image")
+
+        category = get_object_or_404(Category, id=category_id)
+        teacher = get_object_or_404(User, id=teacher_id)
+
+
+
+        create_blog = Course(
+            name = name,
+            category = category,
+            teacher = teacher,
+            price = price,
+            description = description,
+            slug = slug,
+            image = image
+        )
+        create_blog.save()
+        return redirect("teacher_dashboard")
+    categories = Category.objects.all()
+    teachers = User.objects.filter(is_teacher=True)
+    context= {
+        'categories' : categories,
+        'teachers' : teachers
+    }
+    return render(request, "account/teacher_dashboard.html", context)
+    
 
 
