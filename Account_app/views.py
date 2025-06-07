@@ -172,9 +172,14 @@ def teacher_dashboard(request):
         description = request.POST.get("description")
         slug = request.POST.get("slug")
         image = request.FILES.get("image")
-
         category = get_object_or_404(Category, id=category_id)
         teacher = get_object_or_404(User, id=teacher_id)
+
+        if not all([name,category_id,teacher_id,price,description,slug,image]):
+            return JsonResponse({
+                "success" : False,
+                "message" : "All fields are required for post the course"
+            }) 
 
 
 
@@ -188,14 +193,79 @@ def teacher_dashboard(request):
             image = image
         )
         create_blog.save()
-        return redirect("teacher_dashboard")
+        return JsonResponse({
+            "success" : True,
+            "message" : "Course published successfully"
+        })
+        #return redirect("teacher_dashboard")
     categories = Category.objects.all()
     teachers = User.objects.filter(is_teacher=True)
+    courses = Course.objects.all()
     context= {
         'categories' : categories,
-        'teachers' : teachers
+        'teachers' : teachers,
+        'courses' : courses
     }
     return render(request, "account/teacher_dashboard.html", context)
     
+
+def edit_course(request, slug):
+    course = get_object_or_404(Course, slug=slug) if slug else None
+
+    if request.method == "POST":
+        name = request.POST.get("title")
+        category_id = request.POST.get("category")
+        teacher_id = request.POST.get("teacher")
+        price = request.POST.get("price")
+        description = request.POST.get("description")
+        new_slug = request.POST.get("slug")
+        image = request.FILES.get("image")
+
+        # Validation check
+        if not all([name, category_id, teacher_id, price, description, new_slug]):
+            return JsonResponse({
+                "success": False,
+                "message": "All fields are required for post the course"
+            })
+
+        category = get_object_or_404(Category, id=category_id)
+        teacher = get_object_or_404(User, id=teacher_id)
+
+        # Slug uniqueness check
+        if new_slug != course.slug:
+            if Course.objects.filter(slug=new_slug).exclude(id=course.id).exists():
+                return JsonResponse({
+                    "success": False,
+                    "message": "This slug already exists."
+                })
+            course.slug = new_slug
+
+        # Assign all values
+        course.name = name
+        course.category = category
+        course.teacher = teacher
+        course.price = price
+        course.description = description
+        if image:
+            course.image = image
+
+        course.save()
+        return JsonResponse({
+            "success": True,
+            "message": "Course updated successfully"
+        })
+
+    teachers = User.objects.filter(is_teacher=True)
+    courses = Course.objects.all()
+    categories = Category.objects.all()
+    context = {
+        'categories': categories,
+        'teachers': teachers,
+        'courses': courses,
+        'course_details': course
+    }
+    return render(request, "account/teacher_dashboard.html", context)
+
+
 
 

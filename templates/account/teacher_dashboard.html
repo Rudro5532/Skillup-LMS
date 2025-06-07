@@ -29,66 +29,46 @@
 
     <!-- Main Content -->
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-
-      <!-- Profile Edit -->
-      <section id="profile-edit" class="mb-5">
-        <h2>Profile Settings</h2>
-        <form>
-          <div class="mb-3">
-            <label for="teacher_first_name" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="teacher_first_name" value="Jane" required />
-          </div>
-          <div class="mb-3">
-            <label for="teacher_last_name" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="teacher_last_name" value="Smith" required />
-          </div>
-          <div class="mb-3">
-            <label for="teacher_email" class="form-label">Email address (cannot be changed)</label>
-            <input type="email" class="form-control" id="teacher_email" value="jane.smith@example.com" disabled />
-          </div>
-          <div class="mb-3">
-            <label for="teacher_password1" class="form-label">New Password</label>
-            <input type="password" class="form-control" id="teacher_password1" placeholder="Leave blank to keep current password" />
-          </div>
-          <div class="mb-3">
-            <label for="teacher_password2" class="form-label">Confirm New Password</label>
-            <input type="password" class="form-control" id="teacher_password2" placeholder="Confirm new password" />
-          </div>
-          <button type="submit" class="btn btn-success">Update Profile</button>
-        </form>
-      </section>
-
       <!-- Blog Management -->
       <section id="blog-management" class="mb-5">
-        <h2 class="mb-4">Manage Blogs</h2>
+        <h2 class="mb-4">Manage Courses</h2>
 
         <!-- Add Blog Form -->
         <div class="card mb-4">
           <div class="card-header bg-primary text-white">
-            <strong>Create a New Blog</strong>
+            {% if course_details %}
+            <strong>Update course details</strong>
+            {% else %}
+            <strong>Add new course</strong>
+            {% endif %}
           </div>
           <div class="card-body">
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data" action={% if course_details %}{% url "update_course" course_details.slug %}{% else %}{% url "teacher_dashboard" %}{% endif %}>
               {% csrf_token %}
               <div class="mb-3">
+                <input type="hidden" id="course_slug" name="course_slug" value='{% if course_details %}{{course_details.slug }}{% endif %}'>
+              </div>
+              <div class="mb-3">
                 <label for="blogTitle" class="form-label">Blog Name</label>
-                <input type="text" class="form-control" id="blogTitle" name="title" required>
+                <input value='{% if course_details %}{{course_details.name}}{% endif %}' type="text" class="form-control" id="course_name" name="title" required>
               </div>
               <div class="mb-3">
                 <label for="blogCategory" class="form-label">Category</label>
-                <select class="form-select" id="blogCategory" name="category" required>
-                  <option value="">-- Select Category --</option>
+                <select class="form-select" id="category" name="category" required>
+                  <option value="{% if course_details and course_details.category %}
+                      {{course_details.category.id }}
+                    {% endif %}"
+                  >{{course_details.category}}</option>
                   {% for cat in categories %}
                   <option value="{{cat.id}}">{{cat.category_name}}</option>
                   {% endfor %}
-                 
                   <!-- dynamically generate if needed -->
                 </select>
               </div>
               <div class="mb-3">
-                <label for="blogCategory" class="form-label">Teacher</label>
-                <select class="form-select" id="blogCategory" name="teacher" required>
-                  <option value="">-- Select Teacher --</option>
+                <label for="teacher" class="form-label">Teacher</label>
+                <select class="form-select" id="teacher" name="teacher" required>
+                  <option value="{% if course_details and course_details.teacher %}{{course_details.teacher.id}}{% endif %}">{{course_details.teacher}}</option>
                   {% for teacher in teachers %}
                   <option value="{{teacher.id}}">{{teacher.full_name}}</option>
                   {% endfor %}
@@ -97,47 +77,49 @@
               </div>
               <div class="mb-3">
                 <label for="blogTitle" class="form-label">Slug</label>
-                <input type="text" class="form-control" id="blogTitle" name="slug" required>
+                <input value='{% if course_details %}{{course_details.slug}}{% endif %}'  type="text" class="form-control" id="slug" name="slug" required>
               </div>
               <div class="mb-3">
                 <label for="blogImage" class="form-label">Blog Image</label>
-                <input type="file" class="form-control" id="blogImage" name="image" required>
+                <input type="file" class="form-control" id="image" name="image" required>
               </div>
               <div class="mb-3">
                 <label for="blogPrice" class="form-label">Price (₹)</label>
-                <input type="number" class="form-control" id="blogPrice" name="price" min="0" value="0" required>
+                <input value='{% if course_details %}{{course_details.price}}{% endif %}' type="number" class="form-control" id="price" name="price" min="0" value="0" required>
               </div>
               <div class="mb-3">
                 <label for="blogContent" class="form-label">Content</label>
-                <textarea class="form-control" id="blogContent" name="description" rows="6" required></textarea>
+                <textarea class="form-control" id="description" name="description" rows="6" required>{% if course_details %}{{course_details.description}}{% endif %}</textarea>
               </div>
-              <button type="submit" class="btn btn-success">Publish Blog</button>
+              <button type="submit" id="blog_submit" class="btn btn-success">Publish Course</button>
             </form>
+            <p id="post_response"></p>
           </div>
         </div>
 
         <!-- Blog List -->
         <div class="list-group mb-4">
-          <div class="list-group-item list-group-item-action card-hover d-flex justify-content-between align-items-center">
+          {% if courses %}
+          {% for course in courses %}
+          <div class="list-group-item list-group-item-action card-hover d-flex      justify-content-between align-items-center">
             <div>
-              <h5 class="mb-1">How to Learn Python Quickly</h5>
-              <small class="text-muted">Published: 2025-05-15</small>
+              <h5 class="mb-1">{{course.name}}</h5>
+              <small class="text-muted">Published: {{course.created_at}}</small>
             </div>
             <div>
-              <button class="btn btn-sm btn-warning me-2">Edit</button>
-              <button class="btn btn-sm btn-danger">Delete</button>
-            </div>
-          </div>
-          <div class="list-group-item list-group-item-action card-hover d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="mb-1">Django for Beginners</h5>
-              <small class="text-muted">Published: 2025-04-20</small>
+              <h5 class="mb-1">Category : {{course.category}}</h5>
             </div>
             <div>
-              <button class="btn btn-sm btn-warning me-2">Edit</button>
-              <button class="btn btn-sm btn-danger">Delete</button>
+              <a href="{% url "update_course" course.slug %}" class="btn btn-sm btn-warning me-2">Edit</a>
+              <a class="btn btn-sm btn-danger">Delete</a>
             </div>
           </div>
+          {% endfor %}
+          
+          {% else %}
+          <h5 class="text-center">No courses are left</h5>
+          {% endif %}
+          
         </div>
       </section>
 
