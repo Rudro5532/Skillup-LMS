@@ -10,7 +10,8 @@ urlpatterns = [
     path("user_logout/", views.user_logout, name="user_logout"),
     path("student_dashboard/", views.student_dashboard, name="student_dashboard"),
     path("teacher_dashboard/", views.teacher_dashboard, name="teacher_dashboard"),
-    path("update_course/<slug:slug>/", views.edit_course, name="update_course")
+    path("update_course/<slug:slug>/", views.edit_course, name="update_course"),
+    path("delete_course/<slug:slug>/", views.delete_course, name="delete")
     
 ]
 

@@ -88,7 +88,7 @@ $(document).ready(function(){
 
   })
 
-  // for post courses
+  // for manage courses
     $("#blog_submit").click(function(e){
     e.preventDefault();
 
@@ -144,14 +144,17 @@ $(document).ready(function(){
             console.log("Raw Response:", xhr.responseText);
         }
     });
+
+
 });
 
-    
+
+
 
     
 
-    
 });
+// end line of document
 
 
 

@@ -161,7 +161,7 @@ def student_dashboard(request):
 def is_teacher(user):
    return user.is_teacher
 
-@login_required
+@login_required(login_url='user_login')
 @user_passes_test(is_teacher, login_url='home')
 def teacher_dashboard(request):
     if request.method == "POST":
@@ -180,9 +180,7 @@ def teacher_dashboard(request):
                 "success" : False,
                 "message" : "All fields are required for post the course"
             }) 
-
-
-
+        
         create_blog = Course(
             name = name,
             category = category,
@@ -201,17 +199,19 @@ def teacher_dashboard(request):
     categories = Category.objects.all()
     teachers = User.objects.filter(is_teacher=True)
     courses = Course.objects.all()
+    students = User.objects.filter(is_teacher=False, is_superuser=False)
     context= {
         'categories' : categories,
         'teachers' : teachers,
-        'courses' : courses
+        'courses' : courses,
+        'students' : students
     }
     return render(request, "account/teacher_dashboard.html", context)
     
-
+@login_required(login_url='user_login')
+@user_passes_test(is_teacher, login_url='home')
 def edit_course(request, slug):
     course = get_object_or_404(Course, slug=slug) if slug else None
-
     if request.method == "POST":
         name = request.POST.get("title")
         category_id = request.POST.get("category")
@@ -266,6 +266,14 @@ def edit_course(request, slug):
     }
     return render(request, "account/teacher_dashboard.html", context)
 
+@login_required(login_url='user_login')
+@user_passes_test(is_teacher, login_url='home')
+def delete_course(request, slug):
+    course = get_object_or_404(Course, slug=slug) if slug else None
+    course.delete()
+    messages.success(request, "Course deleted successfully!")
+    return redirect("teacher_dashboard") 
+    
 
 
 
