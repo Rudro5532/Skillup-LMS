@@ -137,15 +137,28 @@ def user_login(request):
                 login(request, user)
                 #print("User:", user)
                 if user.is_teacher:
-                    return redirect("teacher_dashboard")
+                    # return redirect("teacher_dashboard")
+                    return JsonResponse({
+                        "success" : True,
+                        "message" : "Login successfull !",
+                        "redirect_url" : "/account/teacher_dashboard/"
+                    })
                 else:
-                    return redirect("student_dashboard")
+                    # return redirect("student_dashboard")
+                    return JsonResponse({
+                            "success" : True,
+                            "message" : "Login successfull !",
+                            "redirect_url" : "/account/student_dashboard/"
+                        })
             else:
-                messages.error(request, "Invalid credential")
-                return render(request, "account/login.html")
+                return JsonResponse({
+                    "success" : False,
+                    "message" : "Invalid credential !",
+                    "redirect_url" : "/account/user_login/"
+                })
         return render(request, "account/login.html")
 
-@login_required
+@login_required(login_url="home")
 def user_logout(request):
     logout(request)
     return redirect("home")

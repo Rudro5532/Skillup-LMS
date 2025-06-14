@@ -103,7 +103,7 @@ $(document).ready(function(){
     const course_slug = $("#course_slug").val();
 
     if (!course_name || !category || !teacher || !slug || !price || !description) {
-        $("#post_response").html("<p style='color:red'>All fields are required</p>");
+        $("#post_response").html(`<div class="alert alert-success">${response.message}<div>`);
         return;
     }
 
@@ -130,14 +130,14 @@ $(document).ready(function(){
         success : function(response){
             console.log("✅ Success:", response);
             if(response.success){
-                $("#post_response").text(response.message);
+                $("#post_response").html(`<div class="alert alert-success">${response.message}</div>`);
             } else {
-                $("#post_response").text("Please try again");
+                $("#post_response").html(`<div class="alert alert-success">Please Try again</div>`);
             }
         },
         error: function(err){
             console.error("❌ Error:", err);
-            $("#post_response").html("<p style='color:red'>Something went wrong</p>");
+            $("#post_response").html(`<div class="alert alert-success">Something went wrong</div>`);
         },
         complete: function(xhr, status) {
             console.log("Complete. Status:", status);
@@ -147,6 +147,51 @@ $(document).ready(function(){
 
 
 });
+
+
+// login ajax
+
+$("#login-btn").click(function(e){
+    e.preventDefault()
+
+    const email = $("#email").val()
+    const password = $("#password").val()
+    const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+
+    $.ajax({
+        url : "/account/user_login/",
+        type : "POST",
+        data : {
+            email : email,
+            password : password,
+            csrfmiddlewaretoken : csrf_token
+        },
+
+        success : function(response){
+            if(response.success){
+                $("#message").html(
+                    `<div class="alert alert-success">${response.message}</div>`
+                )
+                setTimeout(() => {
+                window.location.href = response.redirect_url;
+                }, 2000)
+            }
+            else{
+                $("#message").html(
+                        `<div class="alert alert-danger">Credential Invalid</div>`
+                )
+            }
+
+        },
+
+        error : function(err){
+            $("#message").html(
+                    `<div class="alert alert-danger">Something went wrong</div>`
+            )
+        }
+    })
+
+})
 
 
 
