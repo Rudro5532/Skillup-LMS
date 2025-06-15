@@ -80,38 +80,25 @@
 <!-- Courses Section -->
 <section class="py-5">
     <div class="container">
-        <h2 class="text-center mb-5 fw-bold">🔥 Trending Courses</h2>
+        <h2 class="text-center mb-5 fw-bold">🔥 Recent Courses</h2>
         <div class="row g-4">
+            {% if courses %}
+            {% for course in courses %}
             <div class="col-md-4" data-aos="fade-up">
                 <div class="card h-100">
-                    <img src="https://www.webskittersacademy.in/wp-content/uploads/2024/05/Python-and-Django-Framework-Course-Listing.png" class="card-img-top" alt="Python Course">
+                    <img src="{{course.image.url}}" class="card-img-top" alt="Data Science">
                     <div class="card-body">
-                        <h5 class="card-title">Python Django</h5>
-                        <p class="card-text">Master the Python and Django Frameworks, as well as the basics of fundamental concepts, programming techniques, and user interaction.</p>
+                        <h5 class="card-title">{{course.name}}</h5>
+                        <p class="card-text">{{course.description}}</p>
                         <a href="#" class="btn btn-outline-primary">View Details</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" data-aos="fade-up">
-                <div class="card h-100">
-                    <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/MERN-Stack-Development-Course-Listing.png" class="card-img-top" alt="Web Dev">
-                    <div class="card-body">
-                        <h5 class="card-title">Full Stack Web Development- MERN</h5>
-                        <p class="card-text">Skillup offers a top-tier MERN Stack Development Course in Kolkata. With hands-on training programs, you can achieve endless career opportunities.</p>
-                        <a href="#" class="btn btn-outline-primary">View Details</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4" data-aos="fade-up">
-                <div class="card h-100">
-                    <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/Flutter-with-Dart-Course-Listing.png" class="card-img-top" alt="Data Science">
-                    <div class="card-body">
-                        <h5 class="card-title">Data Science & ML Basics</h5>
-                        <p class="card-text">Skillup is offering a top-notch Flutter with Dart course in Kolkata for beginners. The comprehensive course helps unleash your mobile app development potential for advanced opportunities</p>
-                        <a href="#" class="btn btn-outline-primary">View Details</a>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
+            {% else %}
+            <h1 class="text-center">No courses left</h1>
+            {% endif %}
+
         </div>
     </div>
 </section>
