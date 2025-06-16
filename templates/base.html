@@ -18,6 +18,10 @@
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 	
+
+	<!-- Razorpay -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 	<title>{% block title %}{% endblock title %}</title>
 </head>
 <body>
@@ -25,6 +29,7 @@
 	{% block content %}
 	
 	{% endblock content %}
+	
 
 	{% comment %} Jquery cdn {% endcomment %}
 	<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>

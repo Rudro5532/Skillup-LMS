@@ -4,8 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 
-
-
 def courses(request):
     search = request.GET.get("search")
     all_course = Course.objects.all().order_by("-created_at")

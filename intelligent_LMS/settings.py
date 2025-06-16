@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     #my apps
     "Home_app.apps.HomeAppConfig",
     "Account_app.apps.AccountAppConfig",
-    "Courses_app.apps.CoursesAppConfig"
+    "Courses_app.apps.CoursesAppConfig",
+    "Payment_app.apps.PaymentAppConfig"
 ]
 
 MIDDLEWARE = [
@@ -73,7 +74,7 @@ DATABASES = {
         'NAME': os.getenv("DATABASE_NAME"),
         'PASSWORD' : os.getenv("DATABASE_PASSWORD"),
         'USER' : os.getenv("DATABASE_USER"),
-        'PORT' : os.getenv("DATABASER_PORT"),
+        'PORT' : os.getenv("DATABASE_PORT"),
         'HOST' : os.getenv("DATABASE_HOST")
     }
 }
@@ -136,4 +137,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'developermode22@gmail.com'
 EMAIL_HOST_PASSWORD = 'hbev wykg dgiz mtuq'
+
+# razor pay setup
+RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID')
+RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
 

@@ -150,8 +150,7 @@ $(document).ready(function(){
 
 
 // login ajax
-
-$("#login-btn").click(function(e){
+ $("#login-btn").click(function(e){
     e.preventDefault()
 
     const email = $("#email").val()
@@ -192,6 +191,74 @@ $("#login-btn").click(function(e){
     })
 
 })
+
+
+$("#enroll").click(function(e) {
+    e.preventDefault();
+
+    const amount = $("#amount").val();
+    const course_id = $("#course_id").val();
+    if (!amount || amount <= 0) {
+        alert('Please enter a valid amount.');
+        return;
+    }
+
+    $.ajax({
+        url: "/payment/course_payment/",
+        type: "POST",
+        data: {
+            amount: amount,
+            course_id: course_id,
+            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+        },
+        success: function(data) {
+            console.log("Razorpay Response:", data);
+            const options = {
+                key: data.key,
+                amount: data.amount,
+                order_id: data.order_id,
+                currency: 'INR',
+                name: data.name,
+                description: data.description,
+
+                handler: function(response) {
+                    alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+                    console.log("Payment Response: ", response);
+
+                    $.ajax({
+                        url: "/payment/verify_payment/",
+                        type: "POST",
+                        data: {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
+                        },
+                        success: function(verificationResponse) {
+                            if (verificationResponse.success) {
+                                alert("Payment verified successfully!");
+                            } else {
+                                alert("Payment verification failed: " + verificationResponse.error);
+                            }
+                        },
+                        error: function(error) {
+                            alert("Error verifying payment.");
+                            console.error(error);
+                        }
+                    });
+                }
+            };
+
+            const razorpay = new Razorpay(options);
+            razorpay.open();
+        },
+        error: function(error) {
+            console.error('Order creation error:', error);
+            alert('Error creating order.');
+        }
+    });
+});
+
 
 
 

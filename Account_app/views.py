@@ -12,7 +12,11 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
+from .authentication import create_access_token,create_refresh_token
 import re
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
 
@@ -133,23 +137,35 @@ def user_login(request):
             password = request.POST.get("password")
 
             user = authenticate(request, email = email, password = password)
+
             if user is not None:
                 login(request, user)
-                #print("User:", user)
-                if user.is_teacher:
-                    # return redirect("teacher_dashboard")
-                    return JsonResponse({
-                        "success" : True,
-                        "message" : "Login successfull !",
-                        "redirect_url" : "/account/teacher_dashboard/"
-                    })
-                else:
-                    # return redirect("student_dashboard")
-                    return JsonResponse({
-                            "success" : True,
-                            "message" : "Login successfull !",
-                            "redirect_url" : "/account/student_dashboard/"
-                        })
+                access_token = create_access_token(user.id)
+                refresh_token = create_refresh_token(user.id)
+
+                print("Access token key:", access_token)
+                print("Refresh token key:", refresh_token)
+
+                response = JsonResponse({
+                    "success" : True,
+                    "message" : "Login successfull !",
+                    "access_token" : access_token,
+                    "refresh_token" : refresh_token,
+                    "redirect_url" : "/account/teacher_dashboard/" if user.is_teacher else "/account/student_dashboard/"
+                })
+
+                response.set_cookie(
+                    key="refresh_token",
+                    value= refresh_token,
+                    httponly=True
+                )
+
+                response.set_cookie(
+                    key="access_token",
+                    value= access_token,
+                    httponly=True
+                )
+                return response
             else:
                 return JsonResponse({
                     "success" : False,
