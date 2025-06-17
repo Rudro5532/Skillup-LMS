@@ -99,13 +99,21 @@ $(document).ready(function(){
     const price = $("#price").val();
     const description = $("#description").val();
     const image = $("#image")[0].files[0];
+    const meterial = $("#meterial")[0].files[0];
     const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
     const course_slug = $("#course_slug").val();
 
-    if (!course_name || !category || !teacher || !slug || !price || !description) {
-        $("#post_response").html(`<div class="alert alert-success">${response.message}<div>`);
+    console.log("Image File:", image);
+    console.log("Meterial File:", meterial);
+
+    if (!course_name || !category || !teacher || !slug || !price || !description ) {
+        $("#post_response").html(`<div class="alert alert-danger">All fields are required</div>`);
         return;
     }
+
+
+    
+
 
     const form_data = new FormData();
     form_data.append("title", course_name);
@@ -114,8 +122,9 @@ $(document).ready(function(){
     form_data.append("description", description);
     form_data.append("slug", slug);
     form_data.append("price", price);
-    if (image) {
+    if (image && meterial) {
         form_data.append("image", image);
+        form_data.append("meterial", meterial);
     }
 
     $.ajax({

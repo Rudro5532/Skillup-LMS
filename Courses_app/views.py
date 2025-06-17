@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from .models import Course, Category
+from Payment_app.models import Payment
+from Account_app.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
@@ -25,4 +27,10 @@ def courses(request):
 @login_required(login_url="user_login")
 def get_course(request, slug):
     course = get_object_or_404(Course, slug=slug)
-    return render(request, "courses/single_course.html",{"course" : course})
+    enrollment = Payment.objects.filter(user=request.user, course=course, is_paid = True).exists()
+    context = {
+        "course" : course,
+        "enrollment" : enrollment
+    }
+
+    return render(request, "courses/single_course.html", context)

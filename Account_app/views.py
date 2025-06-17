@@ -182,7 +182,7 @@ def user_logout(request):
 def is_student(user):
    return user.is_authenticated and not user.is_teacher
 
-@login_required
+@login_required(login_url="user_login")
 @user_passes_test(is_student, login_url='teacher_dashboard')
 def student_dashboard(request):
     return render(request, "account/student_dashboard.html")
@@ -201,10 +201,11 @@ def teacher_dashboard(request):
         description = request.POST.get("description")
         slug = request.POST.get("slug")
         image = request.FILES.get("image")
+        course_meterial = request.FILES.get("meterial")
         category = get_object_or_404(Category, id=category_id)
         teacher = get_object_or_404(User, id=teacher_id)
 
-        if not all([name,category_id,teacher_id,price,description,slug,image]):
+        if not all([name,category_id,teacher_id,price,description,slug,image,course_meterial]):
             return JsonResponse({
                 "success" : False,
                 "message" : "All fields are required for post the course"
@@ -217,7 +218,8 @@ def teacher_dashboard(request):
             price = price,
             description = description,
             slug = slug,
-            image = image
+            image = image,
+            course_meterial = course_meterial
         )
         create_blog.save()
         return JsonResponse({
@@ -249,6 +251,7 @@ def edit_course(request, slug):
         description = request.POST.get("description")
         new_slug = request.POST.get("slug")
         image = request.FILES.get("image")
+        course_meterial = request.FILES.get("meterial")
 
         # Validation check
         if not all([name, category_id, teacher_id, price, description, new_slug]):
@@ -275,8 +278,9 @@ def edit_course(request, slug):
         course.teacher = teacher
         course.price = price
         course.description = description
-        if image:
+        if image and course_meterial:
             course.image = image
+            course.course_meterial = course_meterial
 
         course.save()
         return JsonResponse({

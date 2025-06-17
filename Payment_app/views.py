@@ -51,6 +51,7 @@ def course_enrolled(request):
 
             Payment.objects.create(
                 user = request.user,
+                course = course,
                 enrollment = enrollment,
                 amount = amount / 100,
                 payment_method = 'Razorpay',

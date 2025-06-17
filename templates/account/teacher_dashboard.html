@@ -84,6 +84,10 @@
                 <input type="file" class="form-control" id="image" name="image" required>
               </div>
               <div class="mb-3">
+                <label for="blogImage" class="form-label">Blog Meterial</label>
+                <input type="file" class="form-control" id="meterial" name="meterial" required>
+              </div>
+              <div class="mb-3">
                 <label for="blogPrice" class="form-label">Price (₹)</label>
                 <input value='{% if course_details %}{{course_details.price}}{% endif %}' type="number" class="form-control" id="price" name="price" min="0" value="0" required>
               </div>

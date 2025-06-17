@@ -20,6 +20,7 @@ class Course(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="courses")
     slug = models.SlugField(unique=True, null=True, default="")
     image = models.ImageField(upload_to="course_image/")
+    course_meterial = models.FileField(upload_to="course_meterial/")
     price = models.IntegerField()
     created_at = models.DateTimeField(default=timezone.now)
 

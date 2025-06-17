@@ -40,12 +40,20 @@
               <h3 class="text-success fw-bold mb-2">Price : ₹{{course.price}}</h3>
 
               <!-- Payment Form -->
-              <form id="payment-form" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="amount" id="amount" value="{{course.price}}">
-                <input type="hidden" name="course_id" id="course_id" value="{{course.id}}">
-                <button id="enroll" type="submit" class="btn btn-enroll w-100 py-2 mb-3">Enroll Now</button>
-              </form>
+              {% if not request.user.is_teacher %}
+                {% if enrollment  %}
+                  <a href="{{ course.course_meterial.url }}" class="btn btn-enroll mb-2">Download Course Module</a>
+                {% else %}
+                  {% if course %}
+                  <form id="payment-form" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="amount" id="amount" value="{{course.price}}">
+                    <input type="hidden" name="course_id" id="course_id" value="{{course.id}}">
+                    <button id="enroll" type="submit" class="btn btn-enroll w-100 py-2 mb-3">Enroll Now</button>
+                  </form>
+                  {% endif %}
+                {% endif %}
+              {% endif %}
 
               <p class="small text-muted mb-1">Life time access</p>
               <p class="small text-muted">Support class available</p>
