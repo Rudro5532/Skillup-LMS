@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from .models import User
 from Courses_app.models import Category,Course
+from Payment_app.models import Payment
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -229,13 +230,15 @@ def teacher_dashboard(request):
         #return redirect("teacher_dashboard")
     categories = Category.objects.all()
     teachers = User.objects.filter(is_teacher=True)
-    courses = Course.objects.all()
+    courses = Course.objects.filter(teacher=request.user)
     students = User.objects.filter(is_teacher=False, is_superuser=False)
+
+   
     context= {
         'categories' : categories,
         'teachers' : teachers,
         'courses' : courses,
-        'students' : students
+        'students' : students,
     }
     return render(request, "account/teacher_dashboard.html", context)
     
@@ -291,11 +294,14 @@ def edit_course(request, slug):
     teachers = User.objects.filter(is_teacher=True)
     courses = Course.objects.all()
     categories = Category.objects.all()
+    enrollments = Payment.objects.select_related('enrollment__user', 'course')\
+    .filter(course=course, status='Completed', is_paid=True)
     context = {
         'categories': categories,
         'teachers': teachers,
         'courses': courses,
-        'course_details': course
+        'course_details': course,
+        'enrollments': enrollments,
     }
     return render(request, "account/teacher_dashboard.html", context)
 
@@ -307,6 +313,13 @@ def delete_course(request, slug):
     messages.success(request, "Course deleted successfully!")
     return redirect("teacher_dashboard") 
     
-
+@login_required(login_url='user_login')
+@user_passes_test(is_teacher, login_url='home')
+def enrolled_students_list(request):
+    enrollments = Payment.objects.filter(is_paid=True).select_related('user', 'course')
+    context = {
+        'enrollments': enrollments
+    }
+    return render(request, 'account/student_list.html', context)
 
 

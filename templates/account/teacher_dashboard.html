@@ -18,7 +18,7 @@
             <a class="nav-link" href="#blog-management">Manage Blogs</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#students-list">Students List</a>
+            <a class="nav-link" href="{% url 'enrolled_students' %}">Students List</a>
           </li>
           <li class="nav-item mt-5">
             <a class="nav-link btn btn-danger text-white" href="#">Logout</a>
@@ -123,36 +123,6 @@
               {% endif %}
           </div>
       </section>
-
-      <!-- Students List -->
-      <section id="students-list">
-        <h2>Students List</h2>
-        <table class="table table-hover table-striped align-middle">
-          <thead class="table-dark">
-            <tr>
-              <th>#</th>
-              <th>Student Name</th>
-              <th>Email</th>
-              <th>Enrolled Courses</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% if students %}
-            {% for student in students %}
-            <tr>
-              <th>{{forloop.counter}}</th>
-              <td>{{student.full_name}}</td>
-              <td>{{student.email}}</td>
-              <td>#</td>
-            </tr>
-            {% endfor %}
-            {% else %}
-            <h4 class="text-center">No Student Lefts</h4>
-            {% endif %}
-          </tbody>
-        </table>
-      </section>
-
     </main>
   </div>
 </div>

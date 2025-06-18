@@ -98,6 +98,10 @@ def verify_payment(request):
                 payment.status = "Completed"
                 payment.is_paid = True
                 payment.save()
+
+                enrollment = payment.enrollment
+                enrollment.status = "Enrolled"
+                enrollment.save()
                 return JsonResponse({"success": True, "message": "Payment verified successfully!"})
             except razorpay.errors.SignatureVerificationError:
                 print("Signature verification failed!")
