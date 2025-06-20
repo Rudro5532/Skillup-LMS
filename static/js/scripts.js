@@ -165,6 +165,8 @@ $(document).ready(function(){
     const email = $("#email").val()
     const password = $("#password").val()
     const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+    $("#loader-overlay").show();
+    
 
     $.ajax({
         url : "/account/user_login/",
@@ -174,17 +176,20 @@ $(document).ready(function(){
             password : password,
             csrfmiddlewaretoken : csrf_token
         },
-
+       
         success : function(response){
             if(response.success){
                 $("#message").html(
                     `<div class="alert alert-success">${response.message}</div>`
                 )
+                
                 setTimeout(() => {
                 window.location.href = response.redirect_url;
                 }, 2000)
+                
             }
             else{
+                $("#loader-overlay").hide();
                 $("#message").html(
                         `<div class="alert alert-danger">Credential Invalid</div>`
                 )
@@ -193,6 +198,7 @@ $(document).ready(function(){
         },
 
         error : function(err){
+            $("#loader-overlay").hide();
             $("#message").html(
                     `<div class="alert alert-danger">Something went wrong</div>`
             )

@@ -6,6 +6,7 @@ class User(AbstractUser):
     email = models.EmailField(max_length=50, unique=True)
     full_name = models.CharField(max_length=50)
     subject = models.CharField(max_length=100, blank=True)
+    profile_image = models.ImageField(upload_to="profile_image/", blank=True)
 
 
     is_teacher = models.BooleanField(default=False)

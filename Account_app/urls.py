@@ -12,7 +12,8 @@ urlpatterns = [
     path('students/', views.enrolled_students_list, name='enrolled_students'),
     path("teacher_dashboard/", views.teacher_dashboard, name="teacher_dashboard"),
     path("update_course/<slug:slug>/", views.edit_course, name="update_course"),
-    path("delete_course/<slug:slug>/", views.delete_course, name="delete")
+    path("delete_course/<slug:slug>/", views.delete_course, name="delete"),
+    path("edit_profile/", views.edit_profile, name="edit_profile")
     
 ]
 

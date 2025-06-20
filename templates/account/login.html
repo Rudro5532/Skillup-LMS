@@ -31,6 +31,7 @@
                             <p>Don't have an account? <a href="{% url 'signup' %}">Sign up here</a> or <a href="{% url "home" %}">Home</a></p>
                         </div>
 
+                        
                         <div id="message"></div>
                     </div>
                 </div>
@@ -38,5 +39,6 @@
         </div>
     </div>
 </section>
+{% include "partials/loader.html" %}
 
 {% endblock content %}

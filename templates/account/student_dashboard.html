@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Dashboard || Student{% endblock title %}
 {% block content %}
 {% include "partials/navbar.html" %}
@@ -7,7 +8,20 @@
 
     <!-- Sidebar -->
     <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-      <div class="position-sticky pt-3">
+        <div class="position-sticky pt-3">
+          <div class="profile-pic-container">
+          <label for="profile-image" class="profile-pic-label">
+            <div class="profile-pic-wrapper">
+              <img src="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D" alt="Profile Picture" class="profile-pic" id="display-pic">
+              <div class="overlay">
+                <span class="overlay-text">Click to change image</span>
+              </div>
+            </div>
+            <input type="file" id="profile-image" accept="image/*" hidden onchange="loadImage(event)">
+          </label>
+        </div>
+
+
         {% if user.is_authenticated %}
         <h3 class="px-3">Welcome, {{user.full_name}}</h3>
         {% endif %}
@@ -15,24 +29,20 @@
         <ul class="nav flex-column mt-4">
           <li class="nav-item">
             <a class="nav-link" href="#courses">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
-                <path d="M1 2.828c.885-.37 2.154-.828 4-.828 1.333 0 2.5.435 3.5 1 1-...z"/>
-              </svg>
               My Courses
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#profile-settings">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                <path d="..."/>
-              </svg>
               Profile Settings
             </a>
           </li>
-          <li class="nav-item mt-5">
-            <a class="nav-link btn btn-danger text-white" href="#">
-              Logout
+          <li class="nav-item">
+           <li class="nav-item">
+            <a class="nav-link" href="#courses">
+             Change Password
             </a>
+          </li>
           </li>
         </ul>
       </div>
@@ -43,27 +53,23 @@
       <h2 id="courses">My Purchased Courses</h2>
       <div class="row row-cols-1 row-cols-md-3 g-4">
         <!-- Course 1 -->
+        {% if  enroll_courses%}
+        {% for courses in enroll_courses %}
         <div class="col">
           <div class="card course-card shadow-sm">
-            <img src="https://www.webskittersacademy.in/wp-content/uploads/2024/05/Python-and-Django-Framework-Course-Listing.png" class="card-img-top" alt="Course 1">
+            <img src="{{courses.course.image.url}}" class="card-img-top" alt="Course 1">
             <div class="card-body">
-              <h5 class="card-title">Python Django</h5>
-              <p class="card-text text-truncate">Learn Python programming from scratch. This course covers basics to advanced topics.</p>
-              <a href="#" class="btn btn-primary">Go to Course</a>
+              <h5 class="card-title">{{courses.course.name}}</h5>
+              <p class="card-text text-truncate">{{courses.course.description}}</p>
+               <a href="{% url "get_course" slug=courses.course.slug %}" class="btn btn-outline-primary btn-sm">Go to courses</a>
             </div>
           </div>
         </div>
-        <!-- Course 2 -->
-        <div class="col">
-          <div class="card course-card shadow-sm">
-            <img src="https://www.webskittersacademy.in/wp-content/uploads/2022/04/MERN-Stack-Development-Course-Listing.png" class="card-img-top" alt="Course 2">
-            <div class="card-body">
-              <h5 class="card-title">Full Stack Web Development- MERN</h5>
-              <p class="card-text text-truncate">Build real-world web applications using Django framework.</p>
-              <a href="#" class="btn btn-primary">Go to Course</a>
-            </div>
-          </div>
-        </div>
+        {% endfor %}
+        {% else %}
+        <h4 class="text-center">You didn't purchase any course yet</h4>
+        {% endif %}
+        
         <!-- Add more courses here as needed -->
       </div>
 
@@ -97,4 +103,12 @@
 
   </div>
 </div>
+
+<script>
+  function loadImage(event) {
+    const displayPic = document.getElementById('display-pic');
+    displayPic.src = URL.createObjectURL(event.target.files[0]);
+  }
+</script>
+
 {% endblock content %}

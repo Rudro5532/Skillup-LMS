@@ -3,8 +3,31 @@ from .models import User
 from datetime import datetime,timedelta,timezone
 from dotenv import load_dotenv
 import os
+# from django.utils.duration import MiddlewareMixin
+from django.http import JsonResponse
+from django.contrib.auth.models import AnonymousUser
 
 load_dotenv()
+
+
+# class JwtAuthentication(MiddlewareMixin):
+#     def process_request(self, request):
+#         token = request.COOKIES.get('access_token')
+#         if token:
+#             user_id = decode_access_token(token)
+#             if isinstance(user_id, int):
+#                 try:
+#                     request.user = User.objects.get(id=user_id)
+#                 except User.DoesNotExist:
+#                     request.user = AnonymousUser()
+#             else:
+#                 request.user = AnonymousUser()
+#         else:
+#             request.user = AnonymousUser()
+
+        
+
+
 
 
 def create_access_token(id):

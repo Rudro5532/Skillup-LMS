@@ -186,7 +186,11 @@ def is_student(user):
 @login_required(login_url="user_login")
 @user_passes_test(is_student, login_url='teacher_dashboard')
 def student_dashboard(request):
-    return render(request, "account/student_dashboard.html")
+    enroll_courses = Payment.objects.filter(user=request.user, is_paid=True)
+    context = {
+        'enroll_courses' : enroll_courses
+    }
+    return render(request, "account/student_dashboard.html", context)
 
 def is_teacher(user):
    return user.is_teacher
@@ -323,3 +327,5 @@ def enrolled_students_list(request):
     return render(request, 'account/student_list.html', context)
 
 
+def edit_profile(request):
+    return render(request, 'account/edit_profile.html')

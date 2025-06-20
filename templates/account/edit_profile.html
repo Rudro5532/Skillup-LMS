@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+   <section id="profile-edit" class="mb-5">
+      <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+        <h2 class="mb-0">Profile Settings</h2>
+        <a href="{% url 'home' %}" class="btn btn-success">Go to home</a>
+      </div>
+
+        
+        <form>
+          <div class="mb-3">
+            <label for="teacher_first_name" class="form-label">User Name</label>
+            <input type="text" class="form-control" id="teacher_first_name" value="Jane" required />
+          </div>
+          <div class="mb-3">
+            <label for="teacher_last_name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="teacher_last_name" value="Smith" required />
+          </div>
+          <div class="mb-3">
+            <label for="teacher_email" class="form-label">Email address (cannot be changed)</label>
+            <input type="email" class="form-control" id="teacher_email" value="jane.smith@example.com" disabled />
+          </div>
+          <button type="submit" class="btn btn-success">Update Profile</button>
+        </form>
+      </section>
+</div>
+
+
+{% endblock content %}
