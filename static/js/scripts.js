@@ -106,13 +106,10 @@ $(document).ready(function(){
     console.log("Image File:", image);
     console.log("Meterial File:", meterial);
 
-    if (!course_name || !category || !teacher || !slug || !price || !description ) {
+    if (!course_name || !category || !teacher || !slug || !price || !description) {
         $("#post_response").html(`<div class="alert alert-danger">All fields are required</div>`);
         return;
     }
-
-
-    
 
 
     const form_data = new FormData();
@@ -126,6 +123,7 @@ $(document).ready(function(){
         form_data.append("image", image);
         form_data.append("meterial", meterial);
     }
+    $("#loader-overlay").show();
 
     $.ajax({
         url : course_slug ?  `/account/update_course/${course_slug}/` : "/account/teacher_dashboard/",
@@ -140,7 +138,14 @@ $(document).ready(function(){
             console.log("✅ Success:", response);
             if(response.success){
                 $("#post_response").html(`<div class="alert alert-success">${response.message}</div>`);
+                setTimeout(() => {
+                alert(`${response.message}`)
+                console.log(response.message)
+                window.location.href = response.redirect_url;
+                }, 2000)
+              
             } else {
+                $("#loader-overlay").hide();
                 $("#post_response").html(`<div class="alert alert-success">Please Try again</div>`);
             }
         },
@@ -182,11 +187,10 @@ $(document).ready(function(){
                 $("#message").html(
                     `<div class="alert alert-success">${response.message}</div>`
                 )
-                
                 setTimeout(() => {
+                alert(`${response.message}`)
                 window.location.href = response.redirect_url;
-                }, 2000)
-                
+                }, 2000) 
             }
             else{
                 $("#loader-overlay").hide();
@@ -207,7 +211,7 @@ $(document).ready(function(){
 
 })
 
-
+// payment gateway
 $("#enroll").click(function(e) {
     e.preventDefault();
 
@@ -273,6 +277,57 @@ $("#enroll").click(function(e) {
         }
     });
 });
+
+// edit profile
+$("#editProfile").click(function(e){
+    e.preventDefault()
+    const username = $("#username").val()
+    const fullname = $("#fullname").val()
+    const profile_image = $("#profile_image")[0].files[0];
+    const csrf_token = $("input[name='csrfmiddlewaretoken']").val();
+
+    const form_data = new FormData()
+
+    form_data.append("username", username)
+    form_data.append("fullname", fullname)
+    form_data.append("csrf_token", csrf_token)
+    if (profile_image) {
+        form_data.append("profile_image", profile_image);
+    }
+    $("#loader-overlay").show();
+
+    $.ajax({
+        url : "/account/edit_profile/",
+        type : "POST",
+        data : form_data,
+        processData: false,              
+        contentType: false,              
+        headers: {
+            "X-CSRFToken": csrf_token    
+        },
+        success : function(response){
+            if(response.success){
+                $("#post_response").html(`<div class="alert alert-success">${response.message}</div>`);
+                setTimeout(() => {
+                alert(`${response.message}`)
+                console.log(response.message)
+                window.location.href = response.redirect_url;
+                }, 2000)
+            }else{
+                $("#loader-overlay").hide();
+                $("#message").html(`<div class="alert alert-success">Please Try again</div>`);
+
+            } 
+        },
+        error : function(err){
+            console.error("❌ Error:", err);
+            $("#message").html(`<div class="alert alert-success">Something went wrong</div>`);
+        }
+
+    })
+
+})
+
 
 
 

@@ -229,7 +229,8 @@ def teacher_dashboard(request):
         create_blog.save()
         return JsonResponse({
             "success" : True,
-            "message" : "Course published successfully"
+            "message" : "Course published successfully",
+            "redirect_url" : "/account/teacher_dashboard/"
         })
         #return redirect("teacher_dashboard")
     categories = Category.objects.all()
@@ -292,11 +293,12 @@ def edit_course(request, slug):
         course.save()
         return JsonResponse({
             "success": True,
-            "message": "Course updated successfully"
+            "message": "Course updated successfully",
+            "redirect_url" : '/account/teacher_dashboard/'
         })
 
     teachers = User.objects.filter(is_teacher=True)
-    courses = Course.objects.all()
+    courses = Course.objects.filter(teacher=request.user)
     categories = Category.objects.all()
     enrollments = Payment.objects.select_related('enrollment__user', 'course')\
     .filter(course=course, status='Completed', is_paid=True)
@@ -326,6 +328,24 @@ def enrolled_students_list(request):
     }
     return render(request, 'account/student_list.html', context)
 
-
+@login_required(login_url='user_login')
 def edit_profile(request):
-    return render(request, 'account/edit_profile.html')
+    user = request.user
+
+    if request.method == "POST":
+        user.username = request.POST.get("username")
+        user.full_name = request.POST.get("fullname")
+        if request.FILES.get("profile_image"):
+            user.profile_image = request.FILES.get("profile_image")
+
+        user.save()
+        return JsonResponse({
+            "success" : True,
+            "message" : "Profile updated successfully",
+            "redirect_url" : "/account/teacher_dashboard/" if user.is_teacher else "/account/student_dashboard/"
+        })
+
+    context = {
+        "user" : user
+    }
+    return render(request, 'account/edit_profile.html', context)

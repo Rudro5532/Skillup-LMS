@@ -8,23 +8,36 @@
       </div>
 
         
-        <form>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% if user %}
           <div class="mb-3">
             <label for="teacher_first_name" class="form-label">User Name</label>
-            <input type="text" class="form-control" id="teacher_first_name" value="Jane" required />
+            <input type="text" class="form-control" id="username" name="username" value="{{user.username}}" required />
           </div>
           <div class="mb-3">
             <label for="teacher_last_name" class="form-label">Full Name</label>
-            <input type="text" class="form-control" id="teacher_last_name" value="Smith" required />
+            <input type="text" class="form-control" id="fullname" name="fullname" value="{{user.full_name}}" required />
           </div>
+
+          <div class="mb-3">
+            <label for="profile_picture" class="form-label">Upload Your Profile Picture</label>
+            <input type="file" id="profile_image" name="profile_image" class="border">
+          </div>
+          
+           
           <div class="mb-3">
             <label for="teacher_email" class="form-label">Email address (cannot be changed)</label>
-            <input type="email" class="form-control" id="teacher_email" value="jane.smith@example.com" disabled />
+            <input type="email" class="form-control" id="teacher_email" value="{{user.email}}" disabled />
           </div>
-          <button type="submit" class="btn btn-success">Update Profile</button>
+          {% else %}
+          <h1>User doesn't exist</h1>
+          {% endif %}
+          <button type="button" id="editProfile" class="btn btn-success">Update Profile</button>
         </form>
+        <div id="message"></div>
       </section>
 </div>
-
+{% include "partials/loader.html" %}
 
 {% endblock content %}

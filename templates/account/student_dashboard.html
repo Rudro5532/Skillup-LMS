@@ -8,45 +8,40 @@
 
     <!-- Sidebar -->
     <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-        <div class="position-sticky pt-3">
-          <div class="profile-pic-container">
-          <label for="profile-image" class="profile-pic-label">
-            <div class="profile-pic-wrapper">
-              <img src="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D" alt="Profile Picture" class="profile-pic" id="display-pic">
-              <div class="overlay">
-                <span class="overlay-text">Click to change image</span>
-              </div>
-            </div>
-            <input type="file" id="profile-image" accept="image/*" hidden onchange="loadImage(event)">
-          </label>
-        </div>
+  <div class="mt-5 d-flex flex-column align-items-center">
+    {% if user.profile_image %}
+    <img src="{{user.profile_image.url}}" 
+         alt="Profile Picture" 
+         class="rounded-circle mb-2 img-thumbnail" 
+         style="width: 120px; height: 120px; object-fit: cover;">
+    {% else %}
+    <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" 
+         alt="Profile Picture" 
+         class="rounded-circle mb-2 img-thumbnail" 
+         style="width: 120px; height: 120px; object-fit: cover;">
+    {% endif %}
+    
+    <small class="text-muted">{{ user.email }}</small>
+  </div>
 
-
-        {% if user.is_authenticated %}
-        <h3 class="px-3">Welcome, {{user.full_name}}</h3>
-        {% endif %}
-        
-        <ul class="nav flex-column mt-4">
-          <li class="nav-item">
-            <a class="nav-link" href="#courses">
-              My Courses
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#profile-settings">
-              Profile Settings
-            </a>
-          </li>
-          <li class="nav-item">
-           <li class="nav-item">
-            <a class="nav-link" href="#courses">
-             Change Password
-            </a>
-          </li>
-          </li>
-        </ul>
-      </div>
-    </nav>
+  <div class="pt-3 text-center">
+    {% if user.is_authenticated %}
+    <h5 class="px-3">Welcome, {{user.full_name}}</h5>
+    {% endif %}
+    
+    <ul class="nav flex-column mt-4 text-start px-3">
+      <li class="nav-item">
+        <a class="nav-link" href="#courses">My Courses</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url "edit_profile" %}">Profile Settings</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#change-password">Change Password</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
     <!-- Main Content -->
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
@@ -75,30 +70,7 @@
 
       <hr class="my-5" />
 
-      <h2 id="profile-settings">Profile Settings</h2>
-      <form>
-        <div class="mb-3">
-          <label for="first_name" class="form-label">First Name</label>
-          <input type="text" class="form-control" id="first_name" value="John" required />
-        </div>
-        <div class="mb-3">
-          <label for="last_name" class="form-label">Last Name</label>
-          <input type="text" class="form-control" id="last_name" value="Doe" required />
-        </div>
-        <div class="mb-3">
-          <label for="email" class="form-label">Email address (cannot be changed)</label>
-          <input type="email" class="form-control" id="email" value="john@example.com" disabled />
-        </div>
-        <div class="mb-3">
-          <label for="password1" class="form-label">New Password</label>
-          <input type="password" class="form-control" id="password1" placeholder="Leave blank to keep current password" />
-        </div>
-        <div class="mb-3">
-          <label for="password2" class="form-label">Confirm New Password</label>
-          <input type="password" class="form-control" id="password2" placeholder="Confirm new password" />
-        </div>
-        <button type="submit" class="btn btn-success">Update Profile</button>
-      </form>
+      
     </main>
 
   </div>

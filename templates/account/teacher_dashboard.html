@@ -7,12 +7,28 @@
 
     <!-- Sidebar -->
     <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+      <div class="card text-center shadow-sm border-0 mt-5" style="width: 12rem; margin: auto;">
+        <div class="card-body">
+          {% if user.profile_image %}
+          <img src="{{user.profile_image.url}}" 
+              alt="Profile Picture" 
+              class="rounded-circle mb-3 img-thumbnail" 
+              style="width: 120px; height: 120px; object-fit: cover;">
+          <small class="text-muted">{{ user.email }}</small>
+          {% else %}
+          <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" 
+              alt="Profile Picture" 
+              class="rounded-circle mb-3 img-thumbnail" 
+              style="width: 120px; height: 120px; object-fit: cover;">
+          {% endif %}
+        </div>
+      </div>
       <div class="position-sticky pt-3">
         <h3 class="px-3">Hello, {{user.full_name}}</h3>
         <h6 class="px-3">Instructor : {{user.subject}}</h6>
         <ul class="nav flex-column mt-4">
           <li class="nav-item">
-            <a class="nav-link" href="#profile-edit">Profile Settings</a>
+            <a class="nav-link" href="{% url "edit_profile" %}">Profile Settings</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#blog-management">Manage Blogs</a>
@@ -126,4 +142,6 @@
     </main>
   </div>
 </div>
+
+{% include "partials/loader.html" %}
 {% endblock content %}
