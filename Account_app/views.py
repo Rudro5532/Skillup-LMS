@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import User
+from .models import User,PasswordResetOtp
 from Courses_app.models import Category,Course
 from Payment_app.models import Payment
 from django.contrib.auth import authenticate, login, logout
@@ -14,9 +14,10 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from .authentication import create_access_token,create_refresh_token
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password,make_password
 import re
 import os
+import random
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -127,7 +128,6 @@ def activation_view(request, uidb64, token):
         return redirect('user_login')
     else:
         return HttpResponse("Invalid or expired activation link.")
-
 
 
 def user_login(request):
@@ -351,7 +351,7 @@ def edit_profile(request):
     }
     return render(request, 'account/edit_profile.html', context)
 
-
+@login_required(login_url="user_login")
 def change_password(request):
     user = request.user
     if request.method == "POST":
@@ -386,3 +386,84 @@ def change_password(request):
                 "message" : "New password and confirm password dosen't match",
             })
     return render(request, "account/change_password.html")
+
+
+def send_otp_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            user = User.objects.get(email=email)
+            otp = str(random.randint(100000, 999999))
+            while PasswordResetOtp.objects.filter(otp=otp).exists():
+                otp = str(random.randint(100000, 999999))
+
+            PasswordResetOtp.objects.create(user=user,otp=otp)
+
+            send_mail(
+                subject= "Your reset password OTP",
+                message = f"Your OTP is {otp}",
+                from_email= settings.EMAIL_HOST_USER,
+                recipient_list=[email], 
+                fail_silently=False
+            )
+            return JsonResponse({
+                "success" : True,
+                "message" : "OTP send on your email",
+                "redirect_url" : "/account/reset_password/"
+            })
+        
+        except User.DoesNotExist:
+            return JsonResponse({
+                "success" : False,
+                "message" : "user dosen't exist!"
+            })
+    return render(request, "account/otp.html")
+
+
+def reset_password(request):
+    if request.method == "POST":
+        otp = request.POST.get("otp")
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_new_password")
+
+        if new_password != confirm_password:
+            return JsonResponse({
+                "success": False,
+                "message": "Passwords do not match."
+            })
+        
+        if not re.fullmatch(password_regex, new_password ):
+            return JsonResponse({
+                "message" : "write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.",
+                "success" : False
+            })
+        try:
+            otp_entry = PasswordResetOtp.objects.filter(otp=otp).order_by('-created_at').first()
+
+            if otp_entry and otp_entry.is_valid():
+                user = otp_entry.user
+                user.password = make_password(new_password)
+                user.save()
+                otp_entry.delete()
+                return JsonResponse({
+                    "success": True,
+                    "message": "Password reset successfully!",
+                    "redirect_url": "/account/user_login/"
+                })
+            else:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Invalid or expired OTP."
+                })
+        except Exception as e:
+            print("RESET PASSWORD ERROR:", e)
+            return JsonResponse({
+                "success": False,
+                "message": "Something went wrong."
+            })
+
+    return render(request, "account/reset_password.html")
+
+
+
+

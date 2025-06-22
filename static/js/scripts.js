@@ -89,7 +89,7 @@ $(document).ready(function(){
   })
 
   // for manage courses
-    $("#blog_submit").click(function(e){
+  $("#blog_submit").click(function(e){
     e.preventDefault();
 
     const course_name = $("#course_name").val();
@@ -160,10 +160,10 @@ $(document).ready(function(){
     });
 
 
-});
+  });
 
 
-// login ajax
+ // login ajax
  $("#login-btn").click(function(e){
     e.preventDefault()
 
@@ -211,7 +211,7 @@ $(document).ready(function(){
 
 })
 
-// payment gateway
+ // payment gateway
 $("#enroll").click(function(e) {
     e.preventDefault();
 
@@ -278,7 +278,7 @@ $("#enroll").click(function(e) {
     });
 });
 
-// edit profile
+ // edit profile
 $("#editProfile").click(function(e){
     e.preventDefault()
     const username = $("#username").val()
@@ -328,7 +328,6 @@ $("#editProfile").click(function(e){
 
 })
 
-
 // change password
 $("#updatePassword").click(function(e){
     e.preventDefault
@@ -338,10 +337,10 @@ $("#updatePassword").click(function(e){
     const confirmPassword = $("#confirmPassword").val()
     const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
     
-    if(!passwordRegex.test(newPassword)){
-        $("#message").html("<p style='color:red'>write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.</p>")
-        return
-    }
+    // if(!passwordRegex.test(newPassword)){
+    //     $("#message").html("<p style='color:red'>write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.</p>")
+    //     return
+    // }
     $("#loader-overlay").show();
 
 
@@ -359,7 +358,7 @@ $("#updatePassword").click(function(e){
                 alert(`${response.message}`)
                 setTimeout(()=>{
                     window.location.href = response.redirect_url
-                })
+                },3000)
             }else{
                 $("#loader-overlay").hide();
                 $("#message").html(`<div class="alert alert-danger">${response.message}</div>`);
@@ -373,11 +372,77 @@ $("#updatePassword").click(function(e){
 
 })
 
+// forgot Password
+$("#otp").click(function(e){
+    e.preventDefault()
+    const email = $("#email").val()
+    const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+
+    $("#loader-overlay").show();
+
+    $.ajax({
+        url : "/account/forgot_password/",
+        type : "POST",
+        data : {
+            email : email,
+            csrfmiddlewaretoken : csrf_token
+        },
+        success : function(response){
+            if(response.success){
+                alert(response.message)
+               setTimeout(()=>{
+                    window.location.href = response.redirect_url
+                },2000)
+            }else{
+                $("#loader-overlay").hide();
+                $("#message").html(`<div class="alert alert-danger">${response.message}</div>`)
+            }
+        },
+        error : function(err){
+            $("#loader-overlay").hide();
+            $("#message").html(`<div class="alert alert-danger">${err}</div>`)
+        }
+    })
+})
+
+// reset pasword
+$("#reset_password").click(function(e){
+    e.preventDefault()
+    const otp = $("#otp").val()
+    const new_password = $("#new_password").val()
+    const confirm_new_password = $("#confirm_new_password").val()
+    csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+    $("#loader-overlay").show();
 
 
+    $.ajax({
+        url : "/account/reset_password/",
+        type : "POST",
+        data :{
+            otp : otp,
+            new_password : new_password,
+            confirm_new_password : confirm_new_password,
+            csrfmiddlewaretoken : csrf_token
+        },
+        success : function(response){
+            if(response.success){
+                alert(response.message)
+               setTimeout(()=>{
+                    window.location.href = response.redirect_url
+                },2000)
+            }
+            else{
+                $("#loader-overlay").hide();
+                $("#message").html(`<div class="alert alert-danger">${response.message}</div>`)
+            }
+        },
+        error : function(err){
+            $("#loader-overlay").hide();
+            $("#message").html(`<div class="alert alert-danger">${err}</div>`)
+        }
+    })
+})
 
-
-    
 
 });
 // end line of document

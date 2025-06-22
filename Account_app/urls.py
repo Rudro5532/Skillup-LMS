@@ -14,7 +14,9 @@ urlpatterns = [
     path("update_course/<slug:slug>/", views.edit_course, name="update_course"),
     path("delete_course/<slug:slug>/", views.delete_course, name="delete"),
     path("edit_profile/", views.edit_profile, name="edit_profile"),
-    path("change_password/", views.change_password, name="change_password")
+    path("change_password/", views.change_password, name="change_password"),
+    path("forgot_password/", views.send_otp_view, name="forgot_password"),
+    path("reset_password/", views.reset_password, name="reset_password")
     
 ]
 
