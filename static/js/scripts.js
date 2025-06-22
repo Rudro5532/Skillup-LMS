@@ -329,6 +329,50 @@ $("#editProfile").click(function(e){
 })
 
 
+// change password
+$("#updatePassword").click(function(e){
+    e.preventDefault
+
+    const currentPassword = $("#currentPassword").val()
+    const newPassword = $("#newPassword").val()
+    const confirmPassword = $("#confirmPassword").val()
+    const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+    
+    if(!passwordRegex.test(newPassword)){
+        $("#message").html("<p style='color:red'>write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.</p>")
+        return
+    }
+    $("#loader-overlay").show();
+
+
+    $.ajax({
+        url : "/account/change_password/",
+        type : "POST",
+        data : {
+            currentPassword : currentPassword,
+            confirmPassword : confirmPassword,
+            newPassword : newPassword,
+            csrfmiddlewaretoken : csrf_token
+        },
+        success : function(response){
+            if(response.success){
+                alert(`${response.message}`)
+                setTimeout(()=>{
+                    window.location.href = response.redirect_url
+                })
+            }else{
+                $("#loader-overlay").hide();
+                $("#message").html(`<div class="alert alert-danger">${response.message}</div>`);
+            }
+        },
+        error : function(err){
+            $("#message").html(`<div class="alert alert-danger">${err}</div>`);
+        }
+    })
+
+
+})
+
 
 
 

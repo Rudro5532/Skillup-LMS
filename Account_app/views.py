@@ -14,6 +14,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from .authentication import create_access_token,create_refresh_token
+from django.contrib.auth.hashers import check_password
 import re
 import os
 from dotenv import load_dotenv
@@ -349,3 +350,39 @@ def edit_profile(request):
         "user" : user
     }
     return render(request, 'account/edit_profile.html', context)
+
+
+def change_password(request):
+    user = request.user
+    if request.method == "POST":
+        currentPassword = request.POST.get("currentPassword")
+        newPassword = request.POST.get("newPassword")
+        confirmPassword = request.POST.get("confirmPassword")
+
+        if not re.fullmatch(password_regex, newPassword):
+            return JsonResponse({
+                "message" : "write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.",
+                "success" : False
+            })
+
+        if not check_password(currentPassword ,user.password):
+            return JsonResponse({
+                "success" : False,
+                "message" : "current password dosen't match.",
+            })
+        if newPassword == confirmPassword:
+            print("newpass", newPassword)
+            print("confirm", confirmPassword)
+            user.set_password(newPassword)
+            user.save()
+            return JsonResponse({
+                "success" : True,
+                "message" : "Password Change Successfully",
+                "redirect_url" :"/account/teacher_dashboard/" if user.is_teacher else "/account/student_dashboard/"
+            })
+        else:
+           return JsonResponse({
+                "success" : False,
+                "message" : "New password and confirm password dosen't match",
+            })
+    return render(request, "account/change_password.html")
