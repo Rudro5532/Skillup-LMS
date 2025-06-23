@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     "Home_app.apps.HomeAppConfig",
     "Account_app.apps.AccountAppConfig",
     "Courses_app.apps.CoursesAppConfig",
-    "Payment_app.apps.PaymentAppConfig"
+    "Payment_app.apps.PaymentAppConfig",
+    "Core_app.apps.CoreAppConfig"
 ]
 
 MIDDLEWARE = [
@@ -138,6 +139,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'developermode22@gmail.com'
 EMAIL_HOST_PASSWORD = 'hbev wykg dgiz mtuq'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER        
+CONTACT_RECEIVER_EMAIL = EMAIL_HOST_USER 
 
 # razor pay setup
 RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID')

@@ -42,4 +42,18 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"Order {self.id} - {self.user.username}"
+    
+
+class CourseReview(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+    def __str__(self):
+        return f"{self.user} - {self.course}"
+
+
 

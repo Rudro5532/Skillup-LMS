@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Contact Us{% endblock title %}
+{% block content %}
+{% include "partials/navbar.html" %}
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-8 text-center">
+        <h2 class="fw-bold">Get in Touch</h2>
+        <p class="text-muted">Have a question, feedback, or collaboration idea? We’d love to hear from you.</p>
+      </div>
+    </div>
+
+    <div class="row g-5">
+      <!-- Contact Form -->
+      <div class="col-md-6">
+        
+        <div id="store"></div>
+         
+
+        <form method="POST" action="">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="name" class="form-label">Your Name</label>
+            <input type="text" name="name" id="name" class="form-control" placeholder="John Doe" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Your Email</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="you@example.com" required>
+          </div>
+          <div class="mb-3">
+            <label for="message" class="form-label">Message</label>
+            <textarea name="message" id="message" rows="5" class="form-control" placeholder="Write your message here..." required></textarea>
+          </div>
+          <button type="button" id="sendMessage" class="btn btn-primary w-100">Send Message</button>
+        </form>
+      </div>
+
+      <!-- Optional Map or Info -->
+      <div class="col-md-6">
+        <div class="border rounded p-3 h-100 bg-white shadow-sm">
+          <h5>Our Office</h5>
+          <p class="text-muted mb-2">SkillUp LMS<br> 123 Learning Road, Kolkata, India</p>
+
+          <h6>Email:</h6>
+          <p class="mb-3"><a href="mailto:info@skilluplms.com">info@skilluplms.com</a></p>
+
+          <h6>Phone:</h6>
+          <p>+91 98765 43210</p>
+
+          <div class="ratio ratio-4x3 mt-3">
+            <iframe src="https://maps.google.com/maps?q=kolkata&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "partials/footer.html" %}
+{% endblock content %}

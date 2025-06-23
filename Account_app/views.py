@@ -336,6 +336,19 @@ def edit_profile(request):
     if request.method == "POST":
         user.username = request.POST.get("username")
         user.full_name = request.POST.get("fullname")
+
+        if not re.fullmatch(name_regex, user.full_name):
+                return JsonResponse({
+                    "message" : "Please write your full and correct name",
+                    "success" : False
+            })
+        
+        if not re.fullmatch(username_regex, user.username):
+                return JsonResponse({
+                    "message" : "Start with @ and use one number and always use small letter",
+                    "success" : False
+            })
+        
         if request.FILES.get("profile_image"):
             user.profile_image = request.FILES.get("profile_image")
 

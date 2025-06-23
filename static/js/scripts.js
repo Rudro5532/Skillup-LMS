@@ -315,7 +315,7 @@ $("#editProfile").click(function(e){
                 }, 2000)
             }else{
                 $("#loader-overlay").hide();
-                $("#message").html(`<div class="alert alert-success">Please Try again</div>`);
+                $("#message").html(`<div class="alert alert-danger">${response.message}</div>`);
 
             } 
         },
@@ -443,6 +443,76 @@ $("#reset_password").click(function(e){
     })
 })
 
+// student review
+$("#review").click(function(e){
+    e.preventDefault()
+    const comment = $("#comment").val()
+    const slug = $(this).data("slug"); 
+    csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+
+    $.ajax({
+        url : `/course/get_single_course/${slug}/`,
+        type : "POST",
+        data : {
+            comment : comment,
+            csrfmiddlewaretoken : csrf_token
+        },
+        success : function(response){
+            if(response.success){
+                $("#message").html(`<div class="alert alert-success">${response.message}</div>`);
+                setTimeout(()=>{
+                    window.location.href = response.redirect_url
+                },3000)
+            }else{
+                $("#message").html(`<div class="alert alert-alert">${response.message}</div>`);
+            }
+
+            setTimeout(function(){
+                $("#message").fadeOut("slow", function(){
+                    $(this).html("").show(); 
+                });
+            }, 2000)
+        },
+        error : function(err){
+            $("#message").html(`<div class="alert alert-success">${err}</div>`);
+        }
+    })
+})
+
+// send message
+$("#sendMessage").click(function(e){
+    const name = $("#name").val()
+    const email = $("#email").val()
+    const message = $("#message").val()
+    csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+
+    $.ajax({
+        url : "/contact_us/",
+        type : "POST",
+        data : {
+            name : name,
+            email : email,
+            message : message,
+            csrfmiddlewaretoken : csrf_token
+        },
+        success : function(response){
+            if(response.success){
+                $("#store").html(`<div class="alert alert-success">${response.message}</div>`);
+            }else{
+                $("#store").html(`<div class="alert alert-alert">${response.message}</div>`);
+            }
+
+            setTimeout(function(){
+                $("#store").fadeOut("slow", function(){
+                    $(this).html("").show(); 
+                });
+            }, 2000)
+        },
+        error : function(err){
+            $("#message").html(`<div class="alert alert-alert">${err}</div>`);
+        }
+    })
+})
 
 });
 // end line of document

@@ -12,7 +12,7 @@
           <div class="col-md-8">
             <div class="course-card">
               <h1 class="mb-3">{{course.name}}</h1>
-              <h5 class="text-muted">{{course.category}}.</h5>
+              <h5 class="text-muted">{{course.category}}</h5>
               <div class="d-flex align-items-center mb-4">
                 <div>
                   <strong>Instructor:</strong> {{course.teacher}} <br>
@@ -30,7 +30,21 @@
 
               <h5>Course Description</h5>
               <p>{{course.description}}</p>
+
+              <!-- Review Form -->
+              <div class="card p-4 mt-5 shadow-sm">
+                <h5 class="mb-3">Leave a Review</h5>
+                <form action="" method="POST">
+                  {% csrf_token %}
+                  <div class="mb-3">
+                    <textarea name="comment" id="comment" class="form-control" rows="5" placeholder="Write your review here..." required></textarea>
+                  </div>
+                  <button type="button" id="review" data-slug="{{ course.slug }}" class="btn btn-primary">Post Review</button>
+                </form>
+              </div>
+              <!-- Student Reviews Section -->
             </div>
+            
           </div>
 
           <!-- Right Sidebar -->
@@ -41,17 +55,15 @@
 
               <!-- Payment Form -->
               {% if not request.user.is_teacher %}
-                {% if enrollment  %}
+                {% if enrollment %}
                   <a href="{{ course.course_meterial.url }}" class="btn btn-enroll mb-2">Download Course Module</a>
                 {% else %}
-                  {% if course %}
                   <form id="payment-form" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="amount" id="amount" value="{{course.price}}">
                     <input type="hidden" name="course_id" id="course_id" value="{{course.id}}">
                     <button id="enroll" type="submit" class="btn btn-enroll w-100 py-2 mb-3">Enroll Now</button>
                   </form>
-                  {% endif %}
                 {% endif %}
               {% endif %}
 
@@ -62,6 +74,25 @@
           </div>
         </div>
       </div>
+      <div id="message" class="container"></div>
+
+      
+        <div class="card p-4 mt-4 shadow-sm container">
+          {% if review %}
+          <h5 class="mb-4">All Reviews ({{ review|length }})</h5>
+            {% for r in review %}
+              <div class="mb-4 border-bottom pb-3">
+                <strong>{{ r.user.full_name }}</strong>
+                 <span class="text-muted small d-block">{{ r.created_at|date:"F j, Y, g:i a" }}</span>
+                  <p class="mt-2 mb-0">{{ r.comment }}</p>
+              </div>
+            {% endfor %}
+            {% else %}
+            <div class="alert alert-info mt-4">No reviews yet. Be the first to review this course!</div>
+            {% endif %}
+        </div>
+          
+      
     </section>
   {% else %}
     <h1 class="text-center">404 not found</h1>

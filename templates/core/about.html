@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}About Us{% endblock title %}
+{% block content %}
+{% include "partials/navbar.html" %}
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row justify-content-center text-center mb-4">
+      <div class="col-md-10">
+        <h2 class="display-5 fw-bold">About <span class="text-primary">SkillUp LMS</span></h2>
+        <p class="lead text-muted">Empowering students and professionals to upskill through structured, affordable, and accessible learning.</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6">
+        <img src="https://cdn.pixabay.com/photo/2015/07/17/22/43/student-849822_1280.jpg" class="img-fluid rounded shadow" alt="About image">
+      </div>
+      <div class="col-md-6">
+        <h4>Our Mission</h4>
+        <p>At SkillUp, we believe that learning should never stop. Our mission is to provide high-quality, project-based online courses that help individuals build real-world skills and grow in their careers.</p>
+        
+        <h4 class="mt-4">What We Offer</h4>
+        <ul class="list-unstyled">
+          <li>✅ Expert-led online courses</li>
+          <li>✅ Lifetime access to learning material</li>
+          <li>✅ Support classes & community</li>
+          <li>✅ Affordable pricing</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row mt-5 text-center">
+      <div class="col-md-12">
+        <h4>Join thousands of learners who are shaping their future with SkillUp LMS!</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "partials/footer.html" %}
+{% endblock content %}
