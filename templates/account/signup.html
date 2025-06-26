@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Account || Teacher || Signup{% endblock title %}
+{% block title %}Account || {% if 'teacher' in request.path %}Teacher || {% else %} Student || {% endif %}  Signup{% endblock title %}
 
 {% block content %}
 <!-- Registration Form -->

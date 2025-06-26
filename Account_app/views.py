@@ -19,6 +19,10 @@ import re
 import os
 import random
 from dotenv import load_dotenv
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
+
 load_dotenv()
 
 
@@ -103,9 +107,16 @@ def signup(request):
                 token = default_token_generator.make_token(user)
                 activation_link = f"http://localhost:8000/account/activate/{uidb64}/{token}/"
                 subject_line = "Activate your Skillup account"
-                message = f"Hi {full_name},\nClick here to activate your account:\n{activation_link}"
-                send_mail(subject_line, message, settings.EMAIL_HOST_USER, [email], fail_silently=False)
-
+                from_email = settings.EMAIL_HOST_USER
+                to_email = [email]
+                message = render_to_string('account/email.html',{
+                    'activation_link' : activation_link,
+                    'name' : full_name,
+                })
+                text_content = strip_tags(message)
+                email_message = EmailMultiAlternatives(subject_line, text_content, from_email, to_email)
+                email_message.attach_alternative(message, 'text/html')
+                email_message.send()
                 return JsonResponse({"message": "Registration successful! Check your email to activate.", "success": True})
 
             except Exception as e:
