@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
+from django.views.decorators.cache import never_cache
 
 load_dotenv()
 
@@ -195,6 +196,7 @@ def user_logout(request):
 def is_student(user):
    return user.is_authenticated and not user.is_teacher
 
+@never_cache
 @login_required(login_url="user_login")
 @user_passes_test(is_student, login_url='teacher_dashboard')
 def student_dashboard(request):
@@ -207,6 +209,7 @@ def student_dashboard(request):
 def is_teacher(user):
    return user.is_teacher
 
+@never_cache
 @login_required(login_url='user_login')
 @user_passes_test(is_teacher, login_url='home')
 def teacher_dashboard(request):
@@ -259,6 +262,7 @@ def teacher_dashboard(request):
     }
     return render(request, "account/teacher_dashboard.html", context)
     
+
 @login_required(login_url='user_login')
 @user_passes_test(is_teacher, login_url='home')
 def edit_course(request, slug):
