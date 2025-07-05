@@ -66,6 +66,12 @@ def signup(request):
                     "message" : "Email already register",
                     "success" : False
                 })
+            
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({
+                    "message" : "Username already register",
+                    "success" : False
+                })
 
             if not re.fullmatch(password_regex, password ):
                 return JsonResponse({
@@ -99,7 +105,7 @@ def signup(request):
                 password=password,
                 subject = subject,
                 is_teacher = is_teacher,
-                is_staff = is_staff
+                is_staff = is_staff,
             )
             user.set_password(password)
             user.save()
@@ -492,6 +498,74 @@ def reset_password(request):
 
     return render(request, "account/reset_password.html")
 
+
+
+#for admin registration
+
+def admin_reg(request):
+    if request.method == "POST":
+        full_name = request.POST.get("name")
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
+
+        if password != confirm_password:
+            return JsonResponse({
+                "message": "Password and confirm password must be same",
+                "success": False
+            })
+
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({
+                "message": "Email already registered",
+                "success": False
+            })
+
+        if not re.fullmatch(password_regex, password):
+            return JsonResponse({
+                "message": "Write minimum 6 characters. Must contain uppercase, lowercase, digit and special character.",
+                "success": False
+            })
+
+        if not re.fullmatch(name_regex, full_name):
+            return JsonResponse({
+                "message": "Please write your full and correct name",
+                "success": False
+            })
+
+        if not re.fullmatch(username_regex, username):
+            return JsonResponse({
+                "message": "Start with @, use one number, and all small letters",
+                "success": False
+            })
+
+        if not re.fullmatch(email_regex, email):
+            return JsonResponse({
+                "message": "Please write correct format of email",
+                "success": False
+            })
+
+        user = User(
+            full_name=full_name,
+            username=username,
+            email=email,
+            is_superuser=True,
+            is_staff=True,
+            is_active =True
+        )
+        user.set_password(password)
+        user.save()
+        return JsonResponse({
+            "message": "Registration successfull !!",
+            "success": True
+        })
+
+    return render(request, "account/admin_reg.html")
+
+
+
+    
 
 
 

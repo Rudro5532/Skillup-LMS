@@ -4,7 +4,6 @@ const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*_-])[A-Za-z\d!@#$%^&*_-]{6,}/;
 
 
-
 $(document).ready(function(){
   console.log("LMS dom is ready Teacher")
 
@@ -512,6 +511,63 @@ $("#sendMessage").click(function(e){
             $("#message").html(`<div class="alert alert-alert">${err}</div>`);
         }
     })
+})
+
+$("#teacher_reg").click(function(e){
+    e.preventDefault()
+    const username = $("#username").val()
+    const name = $("#name").val()
+    const email = $("#email").val()
+    const password = $("#password").val()
+    const confirm_password = $("#confirm_password").val()
+    const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+    $("#loader-overlay").show();
+
+    $.ajax({
+        url : "/account/signup/lms_admin/",
+        type : "POST",
+        data : {
+            username:username,
+            name : name,
+            email : email,
+            password : password,
+            confirm_password : confirm_password,
+            csrfmiddlewaretoken : csrf_token
+        },
+
+        success : function(response){
+            if(response.success){
+                $("#message").html(
+                    `<div class="alert alert-success" id="alert-box">${response.message}</div>`
+                ) 
+            }
+            else{
+                $("#loader-overlay").hide();
+                $("#message").html(
+                    `<div class="alert alert-danger" id="alert-box">${response.message}</div>`
+                )
+            }
+
+            setTimeout(function() {
+                $("#alert-box").fadeOut("slow", function() {
+                    $(this).remove();
+                });
+            }, 5000);
+
+        },
+
+        error : function(err){
+            $("#message").html(
+                `<div class="alert alert-danger" id="alert-box">${err}</div>`
+            )
+            setTimeout(function() {
+                $("#alert-box").fadeOut("slow", function() {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
+    })
+
 })
 
 });

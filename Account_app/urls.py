@@ -5,6 +5,7 @@ urlpatterns = [
     path("signup/student/", views.signup, name="signup"),
     #secure url
     path("signup/teacher/", views.signup, name="teacher_signup"),
+    path("signup/lms_admin/", views.admin_reg, name="admin_reg"),
     path('activate/<uidb64>/<token>/', views.activation_view, name='activate'),
     path("user_login/", views.user_login, name="user_login"),
     path("user_logout/", views.user_logout, name="user_logout"),
@@ -17,6 +18,5 @@ urlpatterns = [
     path("change_password/", views.change_password, name="change_password"),
     path("forgot_password/", views.send_otp_view, name="forgot_password"),
     path("reset_password/", views.reset_password, name="reset_password")
-    
 ]
 

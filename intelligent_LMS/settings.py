@@ -22,12 +22,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     #my apps
     "Home_app.apps.HomeAppConfig",
     "Account_app.apps.AccountAppConfig",
@@ -145,4 +147,22 @@ CONTACT_RECEIVER_EMAIL = EMAIL_HOST_USER
 # razor pay setup
 RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID')
 RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
+
+#jazmin configueration
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "darkly",
+    "dark_mode_theme": "darkly",
+}
+
+JAZZMIN_SETTINGS = {
+    "changeform_format": "horizontal_tabs",
+    # override change forms on a per modeladmin basis
+    "changeform_format_overrides": {"auth.user": "collapsible", "auth.group": "vertical_tabs"},
+
+    "site_title": "Intelligent LMS Admin",
+    "site_header": "Intelligent LMS",         
+    "site_brand": "Intelligent LMS",          
+    "welcome_sign": "Welcome to Intelligent LMS Admin",
+}
 
