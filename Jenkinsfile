@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         VENV_DIR = 'venv'
-        DJANGO_SETTINGS_MODULE = 'intelligent_LMS.settings' 
     }
 
     stages {
@@ -14,23 +13,21 @@ pipeline {
             }
         }
 
-        stage('Setup Python & Install Requirements') {
+        stage('Setup Virtual Env & Install Dependencies') {
             steps {
-                echo 'Creating virtual environment and installing dependencies...'
-                sh '''
-                    python -m venv ${VENV_DIR}
-                    . ${VENV_DIR}/Scripts/activate
+                bat '''
+                    python -m venv venv
+                    call venv\\Scripts\\activate
                     pip install --upgrade pip
                     pip install -r requirements.txt
                 '''
             }
         }
 
-        stage('Run Migrations') {
+        stage('Migrate Database') {
             steps {
-                echo 'Running Django migrations...'
-                sh '''
-                    . ${VENV_DIR}/Scripts/activate
+                bat '''
+                    call venv\\Scripts\\activate
                     python manage.py migrate
                 '''
             }
@@ -38,19 +35,17 @@ pipeline {
 
         stage('Collect Static Files') {
             steps {
-                echo 'Collecting static files...'
-                sh '''
-                    . ${VENV_DIR}/Scripts/activate
+                bat '''
+                    call venv\\Scripts\\activate
                     python manage.py collectstatic --noinput
                 '''
             }
         }
 
-        stage('Check Server') {
+        stage('Check Django App') {
             steps {
-                echo 'Checking Django health...'
-                sh '''
-                    . ${VENV_DIR}/Scripts/activate
+                bat '''
+                    call venv\\Scripts\\activate
                     python manage.py check
                 '''
             }
