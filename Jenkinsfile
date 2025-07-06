@@ -1,28 +1,58 @@
 pipeline {
     agent any
 
+    environment {
+        VENV_DIR = 'venv'
+        DJANGO_SETTINGS_MODULE = 'intelligent_LMS.settings' 
+    }
+
     stages {
-        stage('Clone Repository') {
+        stage('Clone') {
             steps {
+                echo 'Cloning repository...'
                 git 'https://github.com/Rudro5532/Skillup-LMS.git'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Setup Python & Install Requirements') {
             steps {
-                sh 'docker build -t skillup-lms .'
+                echo 'Creating virtual environment and installing dependencies...'
+                sh '''
+                    python -m venv ${VENV_DIR}
+                    . ${VENV_DIR}/Scripts/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
             }
         }
 
-        stage('Run Docker Compose') {
+        stage('Run Migrations') {
             steps {
-                sh 'docker-compose up -d --build'
+                echo 'Running Django migrations...'
+                sh '''
+                    . ${VENV_DIR}/Scripts/activate
+                    python manage.py migrate
+                '''
             }
         }
 
-        stage('Check Running Containers') {
+        stage('Collect Static Files') {
             steps {
-                sh 'docker ps'
+                echo 'Collecting static files...'
+                sh '''
+                    . ${VENV_DIR}/Scripts/activate
+                    python manage.py collectstatic --noinput
+                '''
+            }
+        }
+
+        stage('Check Server') {
+            steps {
+                echo 'Checking Django health...'
+                sh '''
+                    . ${VENV_DIR}/Scripts/activate
+                    python manage.py check
+                '''
             }
         }
     }
