@@ -9,9 +9,10 @@ pipeline {
         stage('Clone') {
             steps {
                 echo 'Cloning repository...'
-                git 'https://github.com/Rudro5532/Skillup-LMS.git'
+                git branch: 'main', url: 'https://github.com/Rudro5532/Skillup-LMS.git'
             }
         }
+
 
         stage('Setup Virtual Env & Install Dependencies') {
             steps {
