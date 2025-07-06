@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        VENV_DIR = 'venv'
-    }
-
     stages {
         stage('Clone') {
             steps {
@@ -13,42 +9,36 @@ pipeline {
             }
         }
 
-
-        stage('Setup Virtual Env & Install Dependencies') {
+        stage('Build & Run Docker') {
             steps {
-                bat '''
-                    python -m venv venv
-                    call venv\\Scripts\\activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
-                '''
+                echo 'Running Docker containers...'
+                bat 'docker-compose down'
+                bat 'docker-compose up --build -d'
             }
         }
 
-        stage('Migrate Database') {
+        stage('Migrate DB') {
             steps {
-                bat '''
-                    call venv\\Scripts\\activate
-                    python manage.py migrate
-                '''
+                echo 'Running migrations inside docker container...'
+                bat 'docker-compose exec web python manage.py migrate'
             }
         }
 
         stage('Collect Static Files') {
             steps {
-                bat '''
-                    call venv\\Scripts\\activate
-                    python manage.py collectstatic --noinput
-                '''
+                bat 'docker-compose exec web python manage.py collectstatic --noinput'
             }
         }
 
         stage('Check Django App') {
             steps {
-                bat '''
-                    call venv\\Scripts\\activate
-                    python manage.py check
-                '''
+                bat 'docker-compose exec web python manage.py check'
+            }
+        }
+
+        stage('Stop Containers') {
+            steps {
+                bat 'docker-compose down'
             }
         }
     }
