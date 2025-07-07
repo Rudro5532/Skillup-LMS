@@ -12,7 +12,7 @@ pipeline {
         stage('Build & Run Docker') {
             steps {
                 echo 'Running Docker containers...'
-                bat 'docker-compose -f lms.yml down'
+                // bat 'docker-compose -f lms.yml down'
                 bat 'docker-compose -f lms.yml up --build -d'
             }
         }
