@@ -166,3 +166,6 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to Intelligent LMS Admin",
 }
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.ngrok-free.app",  
+]
