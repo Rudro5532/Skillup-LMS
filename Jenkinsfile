@@ -36,10 +36,10 @@ pipeline {
             }
         }
 
-        stage('Stop Containers') {
-            steps {
-                //bat 'docker-compose -f lms.yml down'
-            }
-        }
+        // stage('Stop Containers') {
+        //     steps {
+        //         bat 'docker-compose -f lms.yml down'
+        //     }
+        // }
     }
 }
