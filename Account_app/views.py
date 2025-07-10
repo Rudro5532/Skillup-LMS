@@ -6,6 +6,7 @@ from Courses_app.models import Category,Course
 from Payment_app.models import Payment
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.http import require_POST
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
@@ -256,7 +257,7 @@ def teacher_dashboard(request):
         #return redirect("teacher_dashboard")
     categories = Category.objects.all()
     teachers = User.objects.filter(is_teacher=True)
-    courses = Course.objects.filter(teacher=request.user)
+    courses = Course.objects.all()
     students = User.objects.filter(is_teacher=False, is_superuser=False)
 
    
@@ -273,6 +274,10 @@ def teacher_dashboard(request):
 @user_passes_test(is_teacher, login_url='home')
 def edit_course(request, slug):
     course = get_object_or_404(Course, slug=slug) if slug else None
+    if course.teacher != request.user:
+        return JsonResponse({
+            "error": "You don't have permission to edit this course."
+        }, status=403)
     if request.method == "POST":
         name = request.POST.get("title")
         category_id = request.POST.get("category")
@@ -335,11 +340,19 @@ def edit_course(request, slug):
 
 @login_required(login_url='user_login')
 @user_passes_test(is_teacher, login_url='home')
+@require_POST
 def delete_course(request, slug):
     course = get_object_or_404(Course, slug=slug) if slug else None
+    if course.teacher != request.user:
+        return JsonResponse({
+            "error": "You don't have permission to delete this course."
+        }, status=403)
     course.delete()
-    messages.success(request, "Course deleted successfully!")
-    return redirect("teacher_dashboard") 
+    return JsonResponse({
+        "message" : "Course Delete Successfully",
+        "success" : True,
+        "redirect_url" : "/account/teacher_dashboard/"
+    })
     
 @login_required(login_url='user_login')
 @user_passes_test(is_teacher, login_url='home')

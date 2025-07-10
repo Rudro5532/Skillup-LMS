@@ -513,7 +513,8 @@ $("#sendMessage").click(function(e){
     })
 })
 
-$("#teacher_reg").click(function(e){
+// admin registration
+$("#admin_reg").click(function(e){
     e.preventDefault()
     const username = $("#username").val()
     const name = $("#name").val()
@@ -569,6 +570,38 @@ $("#teacher_reg").click(function(e){
     })
 
 })
+
+// delete course
+
+$(document).on("click", ".event-delete-btn", function () {
+    const course_slug = $(this).data("slug");
+
+    if (!confirm("Are you sure you want to delete this course?")) {
+        return;
+    }
+
+    $.ajax({
+        url: `/account/delete_course/${course_slug}/`,
+        type: "POST",
+        data: {
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        },
+        success: function (response) {
+            $("#post_response").html(`<div class="alert alert-success">${response.message}</div>`)
+            .fadeIn().delay(2000).fadeOut();
+
+            setTimeout(function() {
+                window.location.href = response.redirect_url;
+            }, 2000);
+        },
+        error: function (xhr) {
+            let error = xhr.responseJSON?.error || "Something went wrong.";
+            $('#post_response').html('<div class="alert alert-danger">' + error + '</div>');
+            }
+    });
+});
+
+
 
 });
 // end line of document

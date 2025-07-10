@@ -132,8 +132,13 @@
                 <h5 class="mb-1">Category : {{course.category}}</h5>
                 </div>
                 <div>
+                  {% if course.teacher == request.user %}
                   <a href="{% url "update_course" course.slug %}" class="btn btn-sm btn-warning me-2">Edit</a>
-                   <a href="{% url "delete" course.slug %}" class="btn btn-sm btn-danger">Delete</a> 
+                   {% comment %} <a href="{% url "delete" course.slug %}" class="btn btn-sm btn-danger">Delete</a> {% endcomment %}
+                  <button type="button" class="btn btn-danger btn-sm event-delete-btn" data-slug="{{course.slug}}">Delete</button>
+                  {% else %}
+                  <p>Not Your Course</p>
+                  {% endif %} 
                 </div>
           </div>
             {% endfor %}
