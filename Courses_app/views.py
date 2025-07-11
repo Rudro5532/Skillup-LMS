@@ -45,10 +45,12 @@ def get_course(request, slug):
             })
     enrollment = Payment.objects.filter(user=request.user, course=course, is_paid = True).exists()
     review = CourseReview.objects.filter(course=course).order_by("-created_at")
+    videos = course.videos.all()
     context = {
         "course" : course,
         "enrollment" : enrollment,
-        "review" : review
+        "review" : review,
+        "videos" : videos
     }
 
     return render(request, "courses/single_course.html", context)

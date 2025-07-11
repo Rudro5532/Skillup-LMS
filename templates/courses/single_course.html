@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Course || {{course.name}}{% endblock title %}
 {% block content %}
 {% include "partials/navbar.html" %}
@@ -8,6 +9,7 @@
     <section class="course-header">
       <div class="container">
         <div class="row g-5">
+
           <!-- Left content -->
           <div class="col-md-8">
             <div class="course-card">
@@ -44,7 +46,6 @@
               </div>
               <!-- Student Reviews Section -->
             </div>
-            
           </div>
 
           <!-- Right Sidebar -->
@@ -72,27 +73,82 @@
               <p class="small text-muted">4 to 5 Problem solving class</p>
             </div>
           </div>
+
         </div>
       </div>
+
       <div id="message" class="container"></div>
 
-      
-        <div class="card p-4 mt-4 shadow-sm container">
-          {% if review %}
-          <h5 class="mb-4">All Reviews ({{ review|length }})</h5>
-            {% for r in review %}
-              <div class="mb-4 border-bottom pb-3">
-                <strong>{{ r.user.full_name }}</strong>
-                 <span class="text-muted small d-block">{{ r.created_at|date:"F j, Y, g:i a" }}</span>
-                  <p class="mt-2 mb-0">{{ r.comment }}</p>
+      <!-- Course Video Section -->
+      {% if videos %}
+      <div class="container">
+        <div class="card p-4 mt-5 shadow-sm">
+          <h4 class="mb-4">Course Videos</h4>
+          <div class="video-section">
+
+            <!-- Left: Video Player -->
+            <div class="video-player">
+              <video id="main-video" width="100%" height="400" controls>
+                <source id="video-source" src="#" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+
+            <!-- Right: Lecture List -->
+            <div class="video-list">
+              <div class="lecture-item" onclick="changeVideo('#')">
+                <span class="lecture-icon">▶️</span>
+                <span>Lecture 1: Introduction</span>
               </div>
-            {% endfor %}
-            {% else %}
-            <div class="alert alert-info mt-4">No reviews yet. Be the first to review this course!</div>
-            {% endif %}
+              <div class="lecture-item" onclick="changeVideo('#')">
+                <span class="lecture-icon">▶️</span>
+                <span>Lecture 2: Setup Environment</span>
+              </div>
+              <div class="lecture-item" onclick="changeVideo('#')">
+                <span class="lecture-icon">▶️</span>
+                <span>Lecture 3: First App</span>
+              </div>
+            </div>
+
+          </div>
         </div>
-          
-      
+      </div>
+      {% else %}
+      <div class="container mt-4">
+        <div class="card text-center border border-info shadow-sm p-4" style="background-color: #f0f8ff;">
+          <h5 class="text-info mb-0">🎬 Videos Upcoming...</h5>
+          <p class="text-muted mt-2">Course instructor is working on uploading content. Stay tuned!</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Video Change Script -->
+      <script>
+        function changeVideo(videoUrl) {
+          const video = document.getElementById('main-video');
+          const source = document.getElementById('video-source');
+          source.src = videoUrl;
+          video.load();
+          video.play();
+        }
+      </script>
+
+      <!-- Reviews -->
+      <div class="card p-4 mt-4 shadow-sm container">
+        {% if review %}
+          <h5 class="mb-4">All Reviews ({{ review|length }})</h5>
+          {% for r in review %}
+            <div class="mb-4 border-bottom pb-3">
+              <strong>{{ r.user.full_name }}</strong>
+              <span class="text-muted small d-block">{{ r.created_at|date:"F j, Y, g:i a" }}</span>
+              <p class="mt-2 mb-0">{{ r.comment }}</p>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="alert alert-info mt-4">No reviews yet. Be the first to review this course!</div>
+        {% endif %}
+      </div>
+
     </section>
   {% else %}
     <h1 class="text-center">404 not found</h1>

@@ -34,7 +34,7 @@ name_regex = r'^([A-Za-z]{2,})(\s[A-Za-z]{2,})+$'
 username_regex = r'^@([a-z0-9_]{3,})$'
 email_regex = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
 password_regex = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*_-])[A-Za-z\d!@#$%^&*_-]{6,}'
-
+# for registration
 def signup(request):
     if request.user.is_authenticated:
         return redirect("home")
@@ -133,7 +133,7 @@ def signup(request):
 
     return render(request, "account/signup.html")
     
-
+# account activation link
 def activation_view(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -148,7 +148,7 @@ def activation_view(request, uidb64, token):
     else:
         return HttpResponse("Invalid or expired activation link.")
 
-
+# for user_login
 def user_login(request):
     if request.user.is_authenticated:
         return redirect("home")
@@ -195,14 +195,17 @@ def user_login(request):
                 })
         return render(request, "account/login.html")
 
+# for logout user
 @login_required(login_url="home")
 def user_logout(request):
     logout(request)
     return redirect("home")
 
+# define the function as student
 def is_student(user):
    return user.is_authenticated and not user.is_teacher
 
+# student dashboard
 @never_cache
 @login_required(login_url="user_login")
 @user_passes_test(is_student, login_url='teacher_dashboard')
@@ -213,9 +216,11 @@ def student_dashboard(request):
     }
     return render(request, "account/student_dashboard.html", context)
 
+# define the function as teacher
 def is_teacher(user):
    return user.is_teacher
 
+# teacher dashboard
 @never_cache
 @login_required(login_url='user_login')
 @user_passes_test(is_teacher, login_url='home')
@@ -268,8 +273,15 @@ def teacher_dashboard(request):
         'students' : students,
     }
     return render(request, "account/teacher_dashboard.html", context)
-    
 
+
+def course_video(request):
+    return render(request, "account/video.html")
+
+
+
+
+# for edit courses
 @login_required(login_url='user_login')
 @user_passes_test(is_teacher, login_url='home')
 def edit_course(request, slug):
@@ -338,6 +350,7 @@ def edit_course(request, slug):
     }
     return render(request, "account/teacher_dashboard.html", context)
 
+# for delete courses
 @login_required(login_url='user_login')
 @user_passes_test(is_teacher, login_url='home')
 @require_POST
@@ -353,7 +366,8 @@ def delete_course(request, slug):
         "success" : True,
         "redirect_url" : "/account/teacher_dashboard/"
     })
-    
+
+# all student list
 @login_required(login_url='user_login')
 @user_passes_test(is_teacher, login_url='home')
 def enrolled_students_list(request):
@@ -363,6 +377,7 @@ def enrolled_students_list(request):
     }
     return render(request, 'account/student_list.html', context)
 
+# for edit profile
 @login_required(login_url='user_login')
 def edit_profile(request):
     user = request.user
@@ -398,6 +413,7 @@ def edit_profile(request):
     }
     return render(request, 'account/edit_profile.html', context)
 
+# for change password
 @login_required(login_url="user_login")
 def change_password(request):
     user = request.user
@@ -434,7 +450,7 @@ def change_password(request):
             })
     return render(request, "account/change_password.html")
 
-
+# for otp
 def send_otp_view(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -466,7 +482,7 @@ def send_otp_view(request):
             })
     return render(request, "account/otp.html")
 
-
+# for rest password
 def reset_password(request):
     if request.method == "POST":
         otp = request.POST.get("otp")
@@ -514,7 +530,6 @@ def reset_password(request):
 
 
 #for admin registration
-
 def admin_reg(request):
     if request.method == "POST":
         full_name = request.POST.get("name")
