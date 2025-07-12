@@ -15,12 +15,20 @@
             <div class="course-card">
               <h1 class="mb-3">{{course.name}}</h1>
               <h5 class="text-muted">{{course.category}}</h5>
+
               <div class="d-flex align-items-center mb-4">
                 <div>
                   <strong>Instructor:</strong> {{course.teacher}} <br>
                   <small class="text-muted">{{course.teacher.subject}}</small>
                 </div>
               </div>
+
+              {% if request.user == course.teacher %}
+                <div class="alert alert-warning">
+                  👨‍🏫 You are the instructor of this course.
+                </div>
+              {% endif %}
+
               <hr>
               <h4>What you'll learn</h4>
               <ul class="list-unstyled mb-4">
@@ -44,7 +52,6 @@
                   <button type="button" id="review" data-slug="{{ course.slug }}" class="btn btn-primary">Post Review</button>
                 </form>
               </div>
-              <!-- Student Reviews Section -->
             </div>
           </div>
 
@@ -54,7 +61,6 @@
               <img src="{{course.image.url}}" class="img-fluid rounded mb-3" alt="Course Image">
               <h3 class="text-success fw-bold mb-2">Price : ₹{{course.price}}</h3>
 
-              <!-- Payment Form -->
               {% if not request.user.is_teacher %}
                 {% if enrollment %}
                   <a href="{{ course.course_meterial.url }}" class="btn btn-enroll mb-2">Download Course Module</a>
@@ -68,61 +74,61 @@
                 {% endif %}
               {% endif %}
 
-              <p class="small text-muted mb-1">Life time access</p>
+              <p class="small text-muted mb-1">Lifetime access</p>
               <p class="small text-muted">Support class available</p>
-              <p class="small text-muted">4 to 5 Problem solving class</p>
+              <p class="small text-muted">4 to 5 problem solving sessions</p>
             </div>
           </div>
 
         </div>
       </div>
-
-      <div id="message" class="container"></div>
 
       <!-- Course Video Section -->
       {% if videos %}
-      <div class="container">
-        <div class="card p-4 mt-5 shadow-sm">
-          <h4 class="mb-4">Course Videos</h4>
-          <div class="video-section">
+        {% if enrollment or request.user == course.teacher %}
+          <!-- Show Videos -->
+          <div class="container">
+            <div class="card p-4 mt-5 shadow-sm">
+              <h4 class="mb-4">Course Videos</h4>
+              <div class="video-section d-flex flex-wrap gap-4">
+                <!-- Left: Video Player -->
+                <div class="video-player col-md-8">
+                  <video id="main-video" width="100%" height="400" controls>
+                    <source id="video-source" src="{{ videos.0.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
 
-            <!-- Left: Video Player -->
-            <div class="video-player">
-              <video id="main-video" width="100%" height="400" controls>
-                <source id="video-source" src="#" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-            </div>
-
-            <!-- Right: Lecture List -->
-            <div class="video-list">
-              <div class="lecture-item" onclick="changeVideo('#')">
-                <span class="lecture-icon">▶️</span>
-                <span>Lecture 1: Introduction</span>
-              </div>
-              <div class="lecture-item" onclick="changeVideo('#')">
-                <span class="lecture-icon">▶️</span>
-                <span>Lecture 2: Setup Environment</span>
-              </div>
-              <div class="lecture-item" onclick="changeVideo('#')">
-                <span class="lecture-icon">▶️</span>
-                <span>Lecture 3: First App</span>
+                <!-- Right: Video List -->
+                <div class="video-list col-md-4">
+                  {% for video in videos %}
+                  <div class="lecture-item border p-2 rounded mb-2 bg-light" onclick="changeVideo('{{ video.video.url }}')">
+                    <span class="lecture-icon">▶️</span>
+                    <span>{{ forloop.counter }}. {{ video.title }}</span>
+                  </div>
+                  {% endfor %}
+                </div>
               </div>
             </div>
-
+          </div>
+        {% else %}
+          <!-- Not enrolled -->
+          <div class="container mt-4">
+            <div class="card text-center border border-warning shadow-sm p-4" style="background-color: #fff3cd;">
+              <h5 class="text-warning mb-0">🔒 Purchase this course to access the videos.</h5>
+            </div>
+          </div>
+        {% endif %}
+      {% else %}
+        <!-- No videos -->
+        <div class="container mt-4">
+          <div class="card text-center border border-info shadow-sm p-4" style="background-color: #f0f8ff;">
+            <h5 class="text-info mb-0">🎬 Videos Upcoming...</h5>
+            <p class="text-muted mt-2">Course instructor is working on uploading content. Stay tuned!</p>
           </div>
         </div>
-      </div>
-      {% else %}
-      <div class="container mt-4">
-        <div class="card text-center border border-info shadow-sm p-4" style="background-color: #f0f8ff;">
-          <h5 class="text-info mb-0">🎬 Videos Upcoming...</h5>
-          <p class="text-muted mt-2">Course instructor is working on uploading content. Stay tuned!</p>
-        </div>
-      </div>
       {% endif %}
 
-      <!-- Video Change Script -->
       <script>
         function changeVideo(videoUrl) {
           const video = document.getElementById('main-video');
@@ -148,7 +154,6 @@
           <div class="alert alert-info mt-4">No reviews yet. Be the first to review this course!</div>
         {% endif %}
       </div>
-
     </section>
   {% else %}
     <h1 class="text-center">404 not found</h1>

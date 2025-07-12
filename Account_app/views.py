@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import User,PasswordResetOtp
-from Courses_app.models import Category,Course
+from Courses_app.models import Category,Course,CourseVideo
 from Payment_app.models import Payment
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -274,10 +274,72 @@ def teacher_dashboard(request):
     }
     return render(request, "account/teacher_dashboard.html", context)
 
-
+@login_required(login_url="user_login")
+@user_passes_test(is_teacher, login_url='home')
 def course_video(request):
-    return render(request, "account/video.html")
+    if request.method == 'POST':
+        title = request.POST.get("title")
+        course_id = request.POST.get("course_name")
+        video_file = request.FILES.get("video_file")
 
+        if not all([title,course_id,video_file]): 
+            return JsonResponse({
+                "message" : "All fields ar requried",
+                "success" : False
+            })
+        course = get_object_or_404(Course, id=course_id, teacher=request.user)
+
+        video_create = CourseVideo.objects.create(
+            title=title,
+            course=course,
+            video=video_file
+        )
+        video_create.save()
+        return JsonResponse({
+            "message" : "Video upload successfully !!",
+            "success" : True,
+            "redirect_url" : "/account/course_video/"
+        })
+    courses = Course.objects.filter(teacher=request.user)       
+    return render(request, "account/video.html", {"courses" : courses})
+
+
+def edit_course_video(request,id):
+    course_video = get_object_or_404(CourseVideo, id=id)
+
+    if course_video.course.teacher != request.user:
+        return JsonResponse({
+            "message" : "You don't have permission to edit this video",
+            "success" : False
+        })
+    if request.method == 'POST':
+        title = request.POST.get("title")
+        course_id = request.POST.get("course_name")
+        video_file = request.FILES.get("video_file")
+
+        if not (title and course_id):
+            return JsonResponse({
+                "message": "All fields are required",
+                "success": False
+            })
+        
+        course = get_object_or_404(Course, id=course_id, teacher=request.user)
+        course_video.title = title
+        course_video.course = course
+        if video_file:
+            course_video.video = video_file
+        course_video.save()
+        return JsonResponse({
+            "message" : "Course update successfully !!",
+            "success" : True,
+            "redirect_url" : "/account/course_video/"
+        })
+    courses = Course.objects.filter(teacher=request.user)
+    return render(request, "account/video.html", {
+        "video": course_video,
+        "courses": courses,
+    })
+    
 
 
 

@@ -13,6 +13,7 @@ urlpatterns = [
     path('students/', views.enrolled_students_list, name='enrolled_students'),
     path("teacher_dashboard/", views.teacher_dashboard, name="teacher_dashboard"),
     path("course_video/",views.course_video,name="course_video"),
+    path("edit_video/<int:id>/", views.edit_course_video, name="edit_course_video"),
 
 
     path("update_course/<slug:slug>/", views.edit_course, name="update_course"),

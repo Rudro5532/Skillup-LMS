@@ -7,14 +7,13 @@
   <h3>Upload Course Video</h3>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    
     <div class="mb-3">
       <label for="course">Select Course</label>
-      <select name="course" id="course" class="form-select" required>
+      <select name="course_name" id="course" class="form-select" required>
         <option value="">-- Select Course --</option>
-        {% comment %} {% for course in courses %} {% endcomment %}
-          <option value="#">#</option>
-        {% comment %} {% endfor %} {% endcomment %}
+        {% for course in courses %}
+          <option value="{{course.id}}">{{course.name}}</option>
+        {% endfor %} 
       </select>
     </div>
 
@@ -25,14 +24,58 @@
 
     <div class="mb-3">
       <label for="video_file">Upload Video File (.mp4)</label>
-      <input type="file" name="video_file" id="video_file" class="form-control" accept="video/mp4" required>
+      <input type="file" name="video_file" id="video_file" class="form-control" required>
     </div>
+    <input type="hidden" id="video_id" value="{{ video.id|default:'' }}">
 
-    <button type="submit" class="btn btn-primary">Upload Video</button>
+
+    <button type="button" id="video_up" class="btn btn-primary">Upload Video</button>
     <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary">Back</a>
   </form>
+  <div id="message" class="mt-3"></div>
 </div>
 
-
-
+<div class="container">
+  {% for course in courses %}
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">{{ course.name }}</h5>
+      </div>
+      <div class="card-body">
+        {% if course.videos.all %}
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Video</th>
+                <th>Uploaded At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for video in course.videos.all %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ video.title }}</td>
+                  <td><video width="150" controls><source src="{{ video.video.url }}"></video></td>
+                  <td>{{ video.uploaded_at|date:"M d, Y" }}</td>
+                  <td>
+                    {% comment %} <a href="{% url "edit_course_video" video.id %}" class="btn btn-sm btn-warning">Edit</a> {% endcomment %}
+                     <button data-video_id="{{video.id}}" data-title="{{video.title}}" data-course="{{video.course.id}}" class="btn btn-sm btn-warning event-edit-video">Edit</button>
+                    <a href="#" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="text-muted">No videos uploaded for this course yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+</div>
+{% include "partials/loader.html" %}
 {% endblock content %}

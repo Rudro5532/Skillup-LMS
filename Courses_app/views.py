@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from django.http import JsonResponse
-from .models import Course, Category,CourseReview
+from .models import Course, Category,CourseReview,CourseVideo
 from Payment_app.models import Payment
 from Account_app.models import User
 from django.contrib.auth.decorators import login_required
@@ -45,7 +45,7 @@ def get_course(request, slug):
             })
     enrollment = Payment.objects.filter(user=request.user, course=course, is_paid = True).exists()
     review = CourseReview.objects.filter(course=course).order_by("-created_at")
-    videos = course.videos.all()
+    videos = CourseVideo.objects.filter(course=course)
     context = {
         "course" : course,
         "enrollment" : enrollment,

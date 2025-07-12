@@ -136,9 +136,19 @@
                 </div>
                 <div>
                   {% if course.teacher == request.user %}
-                  <a href="{% url "update_course" course.slug %}" class="btn btn-sm btn-warning me-2">Edit</a>
-                   {% comment %} <a href="{% url "delete" course.slug %}" class="btn btn-sm btn-danger">Delete</a> {% endcomment %}
+                  {% comment %} <a href="{% url "update_course" course.slug %}" class="btn btn-sm btn-warning me-2">Edit</a> {% endcomment %}
+                  <button type="button" class="btn btn-warning btn-sm event-edit-btn"
+                  data-id="{{ course.id }}"
+                  data-title="{{ course.name }}"
+                  data-category="{{ course.category.id }}"
+                  data-teacher="{{ course.teacher.id }}"
+                  data-description="{{ course.description }}"
+                  data-slug="{{ course.slug }}"
+                  data-price="{{ course.price }}"
+                  data-course_slug="{{ course.slug }}">Edit</button>
+
                   <button type="button" class="btn btn-danger btn-sm event-delete-btn" data-slug="{{course.slug}}">Delete</button>
+                  <a href="{% url "get_course" slug=course.slug %}" class="btn btn-sm btn-success ms-2">Go to course</a>
                   {% else %}
                   <p>Not Your Course</p>
                   {% endif %} 
