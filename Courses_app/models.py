@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from Account_app.models import User
+import os
 
 class Category(models.Model):
     category_name = models.CharField(max_length=100)
@@ -27,6 +28,17 @@ class Course(models.Model):
     def __str__(self):
         return self.name
 
+    def delete(self, *args, **kwargs):
+        # Delete image file if exists
+        if self.image and os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+            
+        # Delete course material file if exists
+        if self.course_meterial and os.path.isfile(self.course_meterial.path):
+            os.remove(self.course_meterial.path)
+
+        # Finally delete the object from DB
+        super().delete(*args, **kwargs)
 
 class CourseVideo(models.Model):
     course = models.ForeignKey(Course, on_delete= models.CASCADE, related_name="videos")
@@ -36,6 +48,12 @@ class CourseVideo(models.Model):
 
     def __str__(self):
         return f"{self.course.name}"
+    
+    def delete(self,*args,**kwargs):
+        if self.video and os.path.isfile(self.video.path):
+            os.remove(self.video.path)
+        super().delete(*args,**kwargs)
+
     
 
 class Enrollment(models.Model):

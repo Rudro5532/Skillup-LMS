@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from datetime import timedelta
+import os
 
 class User(AbstractUser):
     username = models.CharField(max_length=50,unique=True)
@@ -21,6 +22,13 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.full_name
+    
+    def delete(self,*args, **kwargs):
+        if self.profile_image and os.path.isfile(self.profile_image.path):
+            os.remove(self.profile_image.path)
+        super().delete(*args, **kwargs)
+
+
 
 
 class PasswordResetOtp(models.Model):

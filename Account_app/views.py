@@ -361,6 +361,7 @@ def delete_course_video(request,id):
     course_video.delete()
     return JsonResponse({
             "message" : "Video delete successfully !! ",
+            "redirect_url" : "/account/course_video/",
             "success" : True,
         })
 

@@ -1,7 +1,7 @@
 $(document).ready(function(){
   console.log("LMS dom is ready Teacher")
   //registration ajax
-    $("#register").click(function(event) {
+  $("#register").click(function(event) {
         event.preventDefault();
         console.log("We are inside the ready function");
 
@@ -57,7 +57,7 @@ $(document).ready(function(){
                 }, 3000);
             }
         });
-    });
+  });
 
 
   // for manage courses
@@ -663,12 +663,15 @@ $(document).on("click", ".event-edit-video", function(){
 
 
 // delete course video
-$(document).on("click", ".event-delete-video", function(){
+$(document).on("click", ".event-delete-video", function(e){
+    e.preventDefault()
     const video_id = $(this).data("video_id")
+   
 
     if(!confirm("Are you sure want to delete this video ?")){
         return
     }
+    $("#loader-overlay").show();
 
     $.ajax({
         url : `/account/delete_video/${video_id}/`,
@@ -677,16 +680,29 @@ $(document).on("click", ".event-delete-video", function(){
             csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
         },
         success : function(response){
-            $("#message").html(`<div class="alert alert-success">${response.message}</div>`)
-            .fadeIn().delay(2000).fadeOut();
+            if(response.success){
+                console.log("Redirect URL from server:", response.redirect_url);
+                setTimeout(() => {
+                alert(`${response.message}`)
+                window.location.href = response.redirect_url;
+                }, 2000) 
+            }
+            else{
+                $("#loader-overlay").hide();
+                $("#message").html(`<div class="alert alert-danger">${response.message}</div>`)
+                .fadeIn().delay(2000).fadeOut();
+            }
         },
         error : function(err){
-            $("#message").html(`<div class="alert alert-success">${err}</div>`)
+            $("#loader-overlay").hide();
+            $("#message").html(`<div class="alert alert-danger">${err.message}</div>`)
             .fadeIn().delay(2000).fadeOut();
         }
 
     })
+
 })
+
 
 });
 // end line of document
