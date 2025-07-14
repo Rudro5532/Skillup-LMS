@@ -61,9 +61,9 @@
                   <td><video width="150" controls><source src="{{ video.video.url }}"></video></td>
                   <td>{{ video.uploaded_at|date:"M d, Y" }}</td>
                   <td>
-                    {% comment %} <a href="{% url "edit_course_video" video.id %}" class="btn btn-sm btn-warning">Edit</a> {% endcomment %}
                      <button data-video_id="{{video.id}}" data-title="{{video.title}}" data-course="{{video.course.id}}" class="btn btn-sm btn-warning event-edit-video">Edit</button>
-                    <a href="#" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+
+                    <button href="#" class="btn btn-sm btn-danger event-delete-video" data-video_id="{{video.id}}">Delete</button>
                   </td>
                 </tr>
               {% endfor %}

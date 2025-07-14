@@ -1,91 +1,64 @@
-const nameRegex = /^([A-Za-z]{2,})(\s[A-Za-z]{2,})$/;
-const usernameRegex = /^@([a-z0-9_]{3,})$/;
-const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*_-])[A-Za-z\d!@#$%^&*_-]{6,}/;
-
-
 $(document).ready(function(){
   console.log("LMS dom is ready Teacher")
-
   //registration ajax
-  $("#register").click(function(event){
-    event.preventDefault()
-    console.log("We ar inside in ready function")
+    $("#register").click(function(event) {
+        event.preventDefault();
+        console.log("We are inside the ready function");
 
-    const username = $("#username").val()
-    const name = $("#name").val()
-    const email = $("#email").val()
-    const password = $("#password").val()
-    const confirm_password = $("#confirm_password").val()
-    const subject = $("#subject").val()
-    const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+        const username = $("#username").val();
+        const name = $("#name").val();
+        const email = $("#email").val();
+        const password = $("#password").val();
+        const confirm_password = $("#confirm_password").val();
+        const subject = $("#subject").val();
+        const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
 
+        $("#loader-overlay").show();
 
-    if(!name || !username || !email || !password){
-        $("#response").html("<p style='color:red'>All field ar requeried</p>")
-        return
-    }
+        $.ajax({
+            url: subject ? "/account/signup/teacher/" : "/account/signup/student/",
+            method: "POST",
+            data: {
+                name: name,
+                username: username,
+                email: email,
+                password: password,
+                confirm_password: confirm_password,
+                subject: subject,
+                csrfmiddlewaretoken: csrf_token
+            },
 
-    if(subject !== undefined && !subject){
-        $("#response").html("<p style='color:red'>Subject is required for teacher registration</p>")
-        return
-    }
+            success: function(response) {
+                $("#loader-overlay").hide();
+                if (response.success) {
+                    $("#message").html(`<div class="alert alert-success">${response.message}</div>`);
+                } else {
+                    $("#loader-overlay").hide();
+                    $("#message").html(`<div class="alert alert-danger">${response.message}</div>`);
+                }
 
-    if(password !== confirm_password){
-        $("#response").html("<p style='color:red'>Password and confirm pasword must be same</p>")
-        return
-    }
+                // Auto-hide message after 3 seconds
+                setTimeout(function() {
+                    $("#message").fadeOut('slow', function() {
+                        $(this).html('').show();
+                    });
+                }, 3000);
+            },
 
-    if(!nameRegex.test(name)){
-        $("#response").html("<p style='color:red'>Please Enter correct and full name.</p>")
-        return
-    }
+            error: function(err) {
+                console.error("AJAX error:", err);
+                $("#loader-overlay").hide();
+                $("#message").html("<div class='alert alert-danger'>Something went wrong! Please try again.</div>");
 
-    if(!emailRegex.test(email)){
-        $("#response").html("<p style='color:red'>Please enter correct email</p>")
-        return
-    }
-
-    if(!usernameRegex.test(username)){
-        $("#response").html("<p style='color:red'>Start with @ and use one number and always use small letter</p>")
-        return
-    }
-
-    if(!passwordRegex.test(password)){
-        $("#response").html("<p style='color:red'>write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.</p>")
-        return
-    }
-
-    $.ajax({
-        url : subject ? "/account/signup/teacher/" : "/account/signup/student/" ,
-        method : "POST",
-        data : {
-            name : name,
-            username : username,
-            email : email,
-            password : password,
-            confirm_password : confirm_password,
-            subject : subject,
-            csrfmiddlewaretoken: csrf_token
-
-        },
-        success : function(response){
-            console.log("✅ Server response:", response);
-            if(response.success){
-                $("#response").text(response.message)
-            }else{
-                 $("#response").text("Please try again")
+                setTimeout(function() {
+                    $("#message").fadeOut('slow', function() {
+                        $(this).html('').show();
+                    });
+                }, 3000);
             }
-        },
+        });
+    });
 
-        error: function(err){
-            console.error("AJAX error:", err);
-            $("#response").html("<p style='color:red'>Something went wrong! Please try again.</p>");
-        }
-
-    })
-
-  })
 
   // for manage courses
   $("#blog_submit").click(function(e){
@@ -396,13 +369,7 @@ $("#updatePassword").click(function(e){
     const newPassword = $("#newPassword").val()
     const confirmPassword = $("#confirmPassword").val()
     const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
-    
-    // if(!passwordRegex.test(newPassword)){
-    //     $("#message").html("<p style='color:red'>write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.</p>")
-    //     return
-    // }
     $("#loader-overlay").show();
-
 
     $.ajax({
         url : "/account/change_password/",
@@ -695,6 +662,31 @@ $(document).on("click", ".event-edit-video", function(){
 })
 
 
+// delete course video
+$(document).on("click", ".event-delete-video", function(){
+    const video_id = $(this).data("video_id")
+
+    if(!confirm("Are you sure want to delete this video ?")){
+        return
+    }
+
+    $.ajax({
+        url : `/account/delete_video/${video_id}/`,
+        type : "POST",
+        data : {
+            csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
+        },
+        success : function(response){
+            $("#message").html(`<div class="alert alert-success">${response.message}</div>`)
+            .fadeIn().delay(2000).fadeOut();
+        },
+        error : function(err){
+            $("#message").html(`<div class="alert alert-success">${err}</div>`)
+            .fadeIn().delay(2000).fadeOut();
+        }
+
+    })
+})
 
 });
 // end line of document

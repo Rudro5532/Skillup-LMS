@@ -27,8 +27,6 @@ from django.views.decorators.cache import never_cache
 
 load_dotenv()
 
-
-
 #regex_part
 name_regex = r'^([A-Za-z]{2,})(\s[A-Za-z]{2,})+$'
 username_regex = r'^@([a-z0-9_]{3,})$'
@@ -55,6 +53,12 @@ def signup(request):
             password = request.POST.get("password")
             confirm_password = request.POST.get("confirm_password")
             subject = request.POST.get("subject") if is_teacher else ''
+
+            if not all([full_name,username,email,password]):
+                return JsonResponse({
+                    "message" : "All fields are required",
+                    "success" : False
+                })
 
             if not password == confirm_password:
                 return JsonResponse({
@@ -303,7 +307,9 @@ def course_video(request):
     courses = Course.objects.filter(teacher=request.user)       
     return render(request, "account/video.html", {"courses" : courses})
 
-
+# for edit video
+@login_required(login_url='user_login')
+@user_passes_test(is_teacher, login_url='home')
 def edit_course_video(request,id):
     course_video = get_object_or_404(CourseVideo, id=id)
 
@@ -339,9 +345,24 @@ def edit_course_video(request,id):
         "video": course_video,
         "courses": courses,
     })
-    
 
+# for delete course video
+@login_required(login_url='user_login')
+@user_passes_test(is_teacher, login_url='home')
+@require_POST
+def delete_course_video(request,id):
+    course_video = get_object_or_404(CourseVideo, id=id)
 
+    if course_video.course.teacher != request.user:
+        return JsonResponse({
+            "message" : "You don't have permission to delete this video",
+            "success" : False
+        })
+    course_video.delete()
+    return JsonResponse({
+            "message" : "Video delete successfully !! ",
+            "success" : True,
+        })
 
 # for edit courses
 @login_required(login_url='user_login')
@@ -588,7 +609,6 @@ def reset_password(request):
             })
 
     return render(request, "account/reset_password.html")
-
 
 
 #for admin registration

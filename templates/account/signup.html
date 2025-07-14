@@ -56,7 +56,7 @@
                 <button type="submit" class="btn btn-primary w-100" id="register">Register</button>
                 <p>Have any account <a href="{% url "user_login" %}">login</a> or <a href="{% url "home" %}">Home page</a></p>
               </form>
-              <div id="response"></div>
+              <div id="message"></div>
             </div>
           </div>
         </div>
@@ -65,5 +65,5 @@
   </section>
   
   
-
+{% include "partials/loader.html" %}
 {% endblock content %}
