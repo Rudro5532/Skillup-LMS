@@ -54,55 +54,49 @@ def signup(request):
             confirm_password = request.POST.get("confirm_password")
             subject = request.POST.get("subject") if is_teacher else ''
 
-            if not all([full_name,username,email,password]):
-                return JsonResponse({
-                    "message" : "All fields are required",
-                    "success" : False
-                })
+            errors = {}
 
-            if not password == confirm_password:
-                return JsonResponse({
-                    "message" : "Password and confirm password must be same",
-                    "success" : False
-                })
+            if not full_name:
+                errors['name'] = "Name is required"
+
+            elif not re.fullmatch(name_regex, full_name):
+                errors['name'] = "Please write your full and correct name"
+
+            if not password:
+                errors['password'] = "Password is required"
+            elif not re.fullmatch(password_regex,password):
+                errors['password'] = "write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter."
+
+            if not confirm_password:
+                errors['confirm_password'] = "Password and confirm_password both are required"
+
+            if password != confirm_password:
+                errors['password'] = "password and confirm password must be same"
             
             if User.objects.filter(email=email).exists():
-                return JsonResponse({
-                    "message" : "Email already register",
-                    "success" : False
-                })
+                errors['email'] = "Email already exists"
+            elif not email:
+                errors['email'] = "Email is required"
+            elif not re.fullmatch(email_regex, email):
+                errors['email'] = "Please write correct format of email"
+
             
             if User.objects.filter(username=username).exists():
-                return JsonResponse({
-                    "message" : "Username already register",
-                    "success" : False
-                })
+                errors['username'] = "Username already registered"
 
-            if not re.fullmatch(password_regex, password ):
-                return JsonResponse({
-                    "message" : "write minimum 6 chracter of password. Minimum one capital letter one small letter one digit and one special charecter.",
-                    "success" : False
-                })
-            
-            if not re.fullmatch(name_regex, full_name):
-                return JsonResponse({
-                    "message" : "Please write your full and correct name",
-                    "success" : False
-                })
+            if not username:
+                errors['username'] = "username required"
+            elif not re.fullmatch(username_regex,username):
+                errors['username'] = "Start with @ and use one number and always use small letter"
 
-            
-            if not re.fullmatch(username_regex,username):
-                return JsonResponse({
-                    "message" : "Start with @ and use one number and always use small letter",
-                    "success" : False
-                })
-            
-            if not re.fullmatch(email_regex, email):
-                return JsonResponse({
-                    "message" : "Please write correct format of email",
-                    "success" : False
-                })
-            
+            if is_teacher and not subject:
+                errors['subject'] = "subject required"
+
+
+            if errors:
+                return JsonResponse({"success": False, "errors": errors})
+
+                
             user = User(
                 full_name = full_name,
                 username = username,
@@ -286,11 +280,20 @@ def course_video(request):
         course_id = request.POST.get("course_name")
         video_file = request.FILES.get("video_file")
 
-        if not all([title,course_id,video_file]): 
-            return JsonResponse({
-                "message" : "All fields ar requried",
-                "success" : False
-            })
+        errors = {}
+
+        if not title:
+            errors['title'] = "Video title required"
+
+        if not course_id:
+            errors['course_name'] = "Select your course name"
+
+        if not video_file:
+            errors['video_file'] = "Video file required"
+
+        if errors:
+            return JsonResponse({"success": False, "errors": errors})
+
         course = get_object_or_404(Course, id=course_id, teacher=request.user)
 
         video_create = CourseVideo.objects.create(
@@ -358,11 +361,18 @@ def delete_course_video(request,id):
             "message" : "You don't have permission to delete this video",
             "success" : False
         })
-    course_video.delete()
-    return JsonResponse({
-            "message" : "Video delete successfully !! ",
-            "redirect_url" : "/account/course_video/",
-            "success" : True,
+    try:
+        if course_video:
+            course_video.delete()
+            return JsonResponse({
+                    "message" : "Video delete successfully !! ",
+                    "redirect_url" : "/account/course_video/",
+                    "success" : True,
+                })
+    except PermissionError:
+        return JsonResponse({
+            "message": "Video file is currently in use. Please close any open players and try again.",
+            "success": False
         })
 
 # for edit courses

@@ -12,11 +12,13 @@ $(document).ready(function(){
         const confirm_password = $("#confirm_password").val();
         const subject = $("#subject").val();
         const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+        const isTeacher = window.location.pathname.includes("/teacher/");
 
-        $("#loader-overlay").show();
+        // $("#loader-overlay").show();
+        $(".error-text").remove();
 
         $.ajax({
-            url: subject ? "/account/signup/teacher/" : "/account/signup/student/",
+            url: isTeacher ? "/account/signup/teacher/" : "/account/signup/student/",
             method: "POST",
             data: {
                 name: name,
@@ -28,11 +30,22 @@ $(document).ready(function(){
                 csrfmiddlewaretoken: csrf_token
             },
 
+            beforeSend: function() {
+                $("#loader-overlay").show(); // Hide it by default
+            },
+
             success: function(response) {
-                $("#loader-overlay").hide();
                 if (response.success) {
+                    $("#loader-overlay").hide();
                     $("#message").html(`<div class="alert alert-success">${response.message}</div>`);
-                } else {
+                }
+                else if (response.errors) {
+                    $("#loader-overlay").hide();
+                    $.each(response.errors, function (field, message) {
+                        $(`#${field}`).after(`<small class="error-text text-danger">${message}</small>`);
+                    })
+                }
+                else {
                     $("#loader-overlay").hide();
                     $("#message").html(`<div class="alert alert-danger">${response.message}</div>`);
                 }
@@ -139,11 +152,13 @@ $(document).ready(function(){
     e.preventDefault()
 
     const title = $("#title").val()
-    const course = $("#course").val()
+    const course = $("#course_name").val()
     const video_file = $("#video_file")[0].files[0]
     const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
     const video_id = $("#video_id").val();
     $("#loader-overlay").show();
+    $(".error-text").remove();
+
 
     const fromData = new FormData()
 
@@ -172,7 +187,15 @@ $(document).ready(function(){
                     $(this).remove(); 
                 });
                 }, 2000)
-            }else{
+            }
+
+            else if (response.errors) {
+                $("#loader-overlay").hide();
+                $.each(response.errors, function (field, message) {
+                    $(`#${field}`).after(`<small class="error-text text-danger">${message}</small>`);
+                })
+            }
+            else{
                 $("#loader-overlay").hide();
                 $("#message").html(`<div class="alert alert-alert">${response.message}</div>`);
                 setTimeout(() => {
@@ -181,6 +204,12 @@ $(document).ready(function(){
                 });
                 }, 2000)
             }
+            // Auto-hide message after 3 seconds
+            setTimeout(function() {
+                $("#message").fadeOut('slow', function() {
+                    $(this).html('').show();
+                });
+            }, 3000);
         },
 
         error : function(err){
@@ -658,7 +687,7 @@ $(document).on("click", ".event-edit-video", function(){
 
     $("#video_id").val(video_id)
     $("#title").val(title)
-    $("#course").val(course_id)
+    $("#course_name").val(course_id)
 })
 
 
@@ -702,6 +731,7 @@ $(document).on("click", ".event-delete-video", function(e){
     })
 
 })
+
 
 
 });

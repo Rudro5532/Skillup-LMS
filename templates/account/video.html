@@ -9,7 +9,7 @@
     {% csrf_token %}
     <div class="mb-3">
       <label for="course">Select Course</label>
-      <select name="course_name" id="course" class="form-select" required>
+      <select name="course_name" id="course_name" class="form-select">
         <option value="">-- Select Course --</option>
         {% for course in courses %}
           <option value="{{course.id}}">{{course.name}}</option>
@@ -19,12 +19,12 @@
 
     <div class="mb-3">
       <label for="title">Video Title</label>
-      <input type="text" name="title" id="title" class="form-control" required>
+      <input type="text" name="title" id="title" class="form-control">
     </div>
 
     <div class="mb-3">
       <label for="video_file">Upload Video File (.mp4)</label>
-      <input type="file" name="video_file" id="video_file" class="form-control" required>
+      <input type="file" name="video_file" id="video_file" class="form-control">
     </div>
     <input type="hidden" id="video_id" value="{{ video.id|default:'' }}">
 

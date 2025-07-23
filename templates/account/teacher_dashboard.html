@@ -71,7 +71,7 @@
                 <input type="hidden" id="course_slug" name="course_slug" value='{% if course_details %}{{course_details.slug }}{% endif %}'>
               </div>
               <div class="mb-3">
-                <label for="blogTitle" class="form-label">Blog Name</label>
+                <label for="blogTitle" class="form-label">Course Name</label>
                 <input value='{% if course_details %}{{course_details.name}}{% endif %}' type="text" class="form-control" id="course_name" name="title" required>
               </div>
               <div class="mb-3">
@@ -102,11 +102,11 @@
                 <input value='{% if course_details %}{{course_details.slug}}{% endif %}'  type="text" class="form-control" id="slug" name="slug" required>
               </div>
               <div class="mb-3">
-                <label for="blogImage" class="form-label">Blog Image</label>
+                <label for="blogImage" class="form-label">Course Image</label>
                 <input type="file" class="form-control" id="image" name="image" required>
               </div>
               <div class="mb-3">
-                <label for="blogImage" class="form-label">Blog Meterial</label>
+                <label for="blogImage" class="form-label">Course Meterial</label>
                 <input type="file" class="form-control" id="meterial" name="meterial" required>
               </div>
               <div class="mb-3">

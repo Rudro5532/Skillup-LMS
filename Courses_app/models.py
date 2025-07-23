@@ -29,16 +29,12 @@ class Course(models.Model):
         return self.name
 
     def delete(self, *args, **kwargs):
-        # Delete image file if exists
         if self.image and os.path.isfile(self.image.path):
             os.remove(self.image.path)
-            
-        # Delete course material file if exists
         if self.course_meterial and os.path.isfile(self.course_meterial.path):
             os.remove(self.course_meterial.path)
-
-        # Finally delete the object from DB
         super().delete(*args, **kwargs)
+
 
 class CourseVideo(models.Model):
     course = models.ForeignKey(Course, on_delete= models.CASCADE, related_name="videos")

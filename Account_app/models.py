@@ -23,10 +23,16 @@ class User(AbstractUser):
     def __str__(self):
         return self.full_name
     
-    def delete(self,*args, **kwargs):
-        if self.profile_image and os.path.isfile(self.profile_image.path):
-            os.remove(self.profile_image.path)
+    def delete(self, *args, **kwargs):
+        try:
+            if self.profile_image and os.path.isfile(self.profile_image.path):
+                os.remove(self.profile_image.path)
+        except PermissionError:
+            print(f"Permission denied while deleting: {self.profile_image.path}")
+        except Exception as e:
+            print(f"Unexpected error while deleting profile image: {e}")
         super().delete(*args, **kwargs)
+
 
 
 

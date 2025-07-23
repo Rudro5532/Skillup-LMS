@@ -21,7 +21,7 @@ def courses(request):
         search_course = Course.objects.filter(
             Q(name__icontains=search) | Q(description__icontains=search) | Q(category__category_name__icontains=search)
         )
-        context["search_course"] = search_course 
+        context["search_course"] = search_course
 
     return render(request, "courses/courses.html", context)
 
