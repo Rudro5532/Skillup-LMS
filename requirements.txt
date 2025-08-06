@@ -1,9 +1,12 @@
 asgiref==3.8.1
 certifi==2025.6.15
 charset-normalizer==3.4.2
+dj-database-url==3.0.1
 Django==5.2
 django-jazzmin==3.0.1
+gunicorn==23.0.0
 idna==3.10
+packaging==25.0
 pillow==11.2.1
 psycopg2==2.9.10
 PyJWT==2.10.1
