@@ -9,6 +9,7 @@ idna==3.10
 packaging==25.0
 pillow==11.2.1
 psycopg2==2.9.10
+psycopg2-binary==2.9.10
 PyJWT==2.10.1
 python-dotenv==1.1.0
 razorpay==1.4.2
